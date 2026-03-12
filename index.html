@@ -189,7 +189,7 @@ tr:hover td{background:rgba(108,92,231,.06)}
 <div class="grid">
   <div class="card full">
     <h2 style="color:#74b9ff">📊 ค่าใช้จ่ายรายวัน (THB/day)</h2>
-    <div class="chart-wrap" style="height:380px"><canvas id="dailyChart"></canvas></div>
+    <div class="chart-wrap" style="height:480px"><canvas id="dailyChart"></canvas></div>
     <div class="explain info">
       <strong>💡 อธิบาย:</strong> กราฟแสดงค่าใช้จ่ายต่อวัน — Perfect ตกวันละ ~34,600 บาท ขณะที่ทองสถิตย์เพียง ~4,445 บาท ห่างกัน ~30,000 บาท/วัน
     </div>
@@ -549,14 +549,14 @@ new C(document.getElementById('dailyChart'),{type:'bar',plugins:[ChartDataLabels
 {label:'ทองสถิตย์',data:[2200,2113,132,4445],backgroundColor:co.t,borderRadius:6}
 ]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
   plugins:{
-    legend:{labels:{color:'#333',font:{family:'Inter',size:12}}},
-    datalabels:{display:true,color:'#333',font:{family:'Inter',size:9,weight:'bold'},anchor:'end',align:'right',offset:4,textAlign:'left',
+    legend:{labels:{color:'#333',font:{family:'Inter',size:14}}},
+    datalabels:{display:true,color:'#333',font:{family:'Inter',size:11,weight:'bold'},anchor:'end',align:'right',offset:4,textAlign:'left',
       formatter:function(v,ctx){var name=ctx.dataset.label;return name+': '+(v>=1000?(v/1000).toFixed(1)+'K':v)+' ฿';}
     }
   },
   scales:{
-    x:{ticks:{color:'#555',font:{family:'Inter'},callback:v=>v>=1000?(v/1000).toFixed(1)+'K ฿':v+' ฿'},grid:{color:'rgba(0,0,0,0.06)'}},
-    y:{ticks:{color:'#333',font:{family:'Inter',size:12,weight:'bold'},padding:8},
+    x:{ticks:{color:'#555',font:{family:'Inter',size:12},callback:v=>v>=1000?(v/1000).toFixed(1)+'K ฿':v+' ฿'},grid:{color:'rgba(0,0,0,0.06)'}},
+    y:{ticks:{color:'#333',font:{family:'Inter',size:14,weight:'bold'},padding:10},
       grid:{display:true,color:'rgba(0,0,0,0.15)',lineWidth:2,drawOnChartArea:true}
     }
   }
