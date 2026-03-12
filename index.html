@@ -629,7 +629,7 @@ function calcCustom(){
   s+='<div class="sc"><div class="label">ปริมาณน้ำเสีย</div><div class="val" style="color:var(--accent)">'+fmt(vol)+'</div><div class="unit">m³/วัน</div></div>';
   s+='<div class="sc"><div class="label">ค่าใช้จ่าย/เดือน (Opt.1)</div><div class="val" style="color:var(--accent2);font-size:1.4rem">'+fmt(totP1*26)+'</div><div class="unit">บาท/เดือน</div></div>';
   s+='<div class="sc"><div class="label">ค่าใช้จ่าย/เดือน (ทองสถิตย์)</div><div class="val" style="color:var(--green);font-size:1.4rem">'+fmt(totTS*26)+'</div><div class="unit">บาท/เดือน</div></div>';
-  s+='<div class="sc highlight"><div class="label">ประหยัด/ปี (ทองสถิตย์ vs Opt.1)</div><div class="val" style="color:var(--green);font-size:1.4rem">'+fmt(diffDay*301)+'</div><div class="unit">บาท/ปี</div></div>';
+  s+='<div class="sc highlight"><div class="label">ประหยัด/เดือน (ทองสถิตย์ vs Opt.1)</div><div class="val" style="color:var(--green);font-size:1.4rem">'+fmt(diffDay*26)+'</div><div class="unit">บาท/เดือน</div></div>';
   s+='</div>';
   s+='<table style="margin-top:12px"><thead><tr><th></th><th class="text-c">Perfect Opt.1</th><th class="text-c">Perfect Opt.2</th><th class="text-c">ทองสถิตย์</th></tr></thead><tbody>';
   s+='<tr><td>📅 ต่อวัน</td><td class="text-r" style="color:#6c5ce7">'+fmt(totP1)+' ฿</td><td class="text-r" style="color:#0984e3">'+fmt(totP2)+' ฿</td><td class="text-r" style="color:#00956f">'+fmt(totTS)+' ฿</td></tr>';
