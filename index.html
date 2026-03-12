@@ -280,13 +280,7 @@ tr:hover td{background:rgba(108,92,231,.06)}
   </div>
 </div>
 
-<!-- ========== ELECTRICAL COMPARISON CHART ========== -->
-<div class="grid">
-  <div class="card full sec-elec">
-    <h2 style="color:#fdcb6e">⚡ กราฟเปรียบเทียบ Electrical Cost ต่อปี (THB/yr)</h2>
-    <div class="chart-wrap"><canvas id="elecChart"></canvas></div>
-  </div>
-</div>
+
 
 <!-- ========== CHEMICAL DETAIL ========== -->
 <div class="grid">
@@ -568,12 +562,6 @@ const pieCols=[co.p1,co.yel,co.red];
 new C(document.getElementById('pieP1'),{type:'doughnut',plugins:[ChartDataLabels],data:{labels:['ค่าไฟฟ้า','ค่าสารเคมี','ค่ากำจัดตะกอน'],datasets:[{data:[5.76,5.36,57.54],backgroundColor:pieCols,borderWidth:2,borderColor:'#fff'}]},options:pieOpts('Perfect Opt.1')});
 new C(document.getElementById('pieP2'),{type:'doughnut',plugins:[ChartDataLabels],data:{labels:['ค่าไฟฟ้า','ค่าสารเคมี','ค่ากำจัดตะกอน'],datasets:[{data:[5.01,5.36,57.54],backgroundColor:pieCols,borderWidth:2,borderColor:'#fff'}]},options:pieOpts('Perfect Opt.2')});
 new C(document.getElementById('pieTS'),{type:'doughnut',plugins:[ChartDataLabels],data:{labels:['ค่าไฟฟ้า','ค่าสารเคมี','ค่ากำจัดตะกอน'],datasets:[{data:[4.40,4.23,0.26],backgroundColor:['rgba(0,149,111,0.75)','rgba(214,137,16,0.75)','rgba(214,48,49,0.75)'],borderWidth:2,borderColor:'#fff'}]},options:pieOpts('ทองสถิตย์')});;
-
-// ========== Electrical comparison ==========
-new C(document.getElementById('elecChart'),{type:'bar',plugins:[ChartDataLabels],data:{labels:['Air Blower','Submersible\nPump','Centrifugal\nPump','Sludge\nPump','Chem Dosing\n/Scrapper','Instrument\n& Control','Screw\nPress'],datasets:[
-{label:'Perfect Opt.1',data:[512460,157680,86724,86724,14585,78840,123188],backgroundColor:co.p1,borderRadius:4},
-{label:'Perfect Opt.2',data:[512460,157680,86724,86724,39420,39420,0],backgroundColor:co.p2,borderRadius:4}
-]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#333',font:{family:'Inter',size:11}}},datalabels:{display:function(ctx){return ctx.dataset.data[ctx.dataIndex]>0;},color:'#333',font:{family:'Inter',size:8,weight:'bold'},anchor:'end',align:'top',offset:1,formatter:v=>(v/1000).toFixed(0)+'K'}},scales:{x:{ticks:{color:'#555',font:{family:'Inter',size:9}},grid:{display:false}},y:{ticks:{color:'#555',callback:v=>v>=1000?(v/1000).toFixed(0)+'K':v},grid:{color:'rgba(0,0,0,0.06)'}}}}});
 
 
 
