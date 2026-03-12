@@ -64,52 +64,82 @@ tr:hover td{background:rgba(108,92,231,.06)}
 .pros-cons ul{font-size:.8rem;color:var(--muted);padding-left:18px;line-height:1.8}
 .section-explain{margin-bottom:20px;padding:16px 20px;background:#f5f3ff;border:1px solid rgba(108,92,231,.2);border-radius:12px;font-size:.85rem;line-height:1.7;color:var(--muted)}
 .section-explain strong{color:var(--text)}
-/* Tables responsive wrapper */
-.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+/* Responsive helpers */
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -4px;padding:0 4px}
+.table-scroll table{min-width:600px}
 .pie-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;margin-top:12px}
 .missing-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
 
-/* Tablet */
+/* Tablet ≤1024px */
 @media(max-width:1024px){
   body{padding:16px}
   .score-cards{grid-template-columns:repeat(2,1fr)}
   .pie-grid{grid-template-columns:1fr 1fr;gap:16px}
 }
 
-/* Mobile */
+/* Mobile ≤768px */
 @media(max-width:768px){
   body{padding:10px}
   h1{font-size:1.4rem}
-  .subtitle{font-size:.8rem;margin-bottom:20px}
-  .grid{gap:14px}
-  .card{padding:16px;border-radius:12px}
-  .card h2{font-size:1.1rem;padding-bottom:8px}
+  .subtitle{font-size:.8rem;margin-bottom:16px}
+  .grid{gap:12px}
+  .card{padding:14px;border-radius:12px}
+  .card h2{font-size:1.05rem;padding-bottom:8px;border-bottom-width:2px}
   .score-cards{grid-template-columns:1fr 1fr;gap:10px}
-  .sc{padding:14px}
-  .sc .val{font-size:1.5rem}
-  .chart-wrap{height:280px}
+  .sc{padding:12px}
+  .sc .val{font-size:1.4rem}
+  .sc .label{font-size:.65rem}
+  .chart-wrap{height:300px}
   .pie-grid{grid-template-columns:1fr;gap:16px}
   .missing-grid{grid-template-columns:1fr}
   .pros-cons{grid-template-columns:1fr}
-  table{font-size:.78rem}
-  th,td{padding:8px 6px}
-  .explain{padding:10px 14px;font-size:.78rem}
-  .section-explain{padding:12px 14px;font-size:.8rem}
-  .verdict{padding:18px}
-  .verdict h2{font-size:1.1rem}
+  table{font-size:.75rem}
+  th,td{padding:7px 5px}
+  .explain{padding:10px 12px;font-size:.76rem}
+  .section-explain{padding:10px 12px;font-size:.78rem}
+  .verdict{padding:16px}
+  .verdict h2{font-size:1.05rem}
 }
 
-/* Small mobile */
-@media(max-width:480px){
+/* iPhone ≤430px */
+@media(max-width:430px){
   body{padding:6px}
-  h1{font-size:1.2rem}
+  h1{font-size:1.15rem}
+  .subtitle{font-size:.72rem;margin-bottom:12px}
+  .container{padding:0}
+  .grid{gap:10px}
+  .card{padding:10px;border-radius:10px}
+  .card h2{font-size:.95rem;padding-bottom:6px;gap:6px;letter-spacing:0}
+  .score-cards{grid-template-columns:1fr 1fr;gap:8px}
+  .sc{padding:10px}
+  .sc .val{font-size:1.2rem}
+  .sc .label{font-size:.6rem;letter-spacing:.5px}
+  .sc .unit{font-size:.7rem}
+  .chart-wrap{height:260px}
+  .chart-wrap[style*="height"]{height:260px!important}
+  table{font-size:.7rem}
+  th{font-size:.65rem;padding:5px 4px;white-space:normal}
+  td{padding:5px 4px}
+  .table-scroll table{min-width:500px}
+  .badge{font-size:.6rem;padding:1px 5px}
+  .explain{padding:8px 10px;font-size:.72rem;line-height:1.5}
+  .section-explain{padding:8px 10px;font-size:.72rem;line-height:1.5}
+  .winner{font-size:.55rem;padding:1px 6px}
+  .verdict{padding:12px}
+  .verdict h2{font-size:.95rem}
+  .verdict>p{font-size:.78rem}
+  .pros-cons h3{font-size:.78rem}
+  .pros-cons ul{font-size:.72rem;padding-left:14px}
+}
+
+/* iPhone SE / mini ≤375px */
+@media(max-width:375px){
+  h1{font-size:1.05rem}
   .score-cards{grid-template-columns:1fr}
-  .sc .val{font-size:1.3rem}
-  .card{padding:12px;border-radius:10px}
-  .card h2{font-size:1rem;flex-wrap:wrap}
-  .chart-wrap{height:240px}
-  table{font-size:.72rem}
-  th,td{padding:6px 4px;word-break:break-word}
+  .sc .val{font-size:1.1rem}
+  .card h2{font-size:.88rem}
+  .chart-wrap{height:220px}
+  .chart-wrap[style*="height"]{height:220px!important}
 }
 </style>
 </head>
@@ -139,7 +169,7 @@ tr:hover td{background:rgba(108,92,231,.06)}
 <div class="grid">
   <div class="card full sec-table">
     <h2>📊 เปรียบเทียบค่าใช้จ่ายแต่ละหมวด (THB/m³)</h2>
-    <table>
+    <div class="table-scroll"><table>
       <thead><tr><th>หมวดค่าใช้จ่าย</th><th class="text-r">Perfect Opt.1</th><th class="text-r">Perfect Opt.2</th><th class="text-r">ทองสถิตย์</th><th class="text-c">ผลต่าง<br>(Opt.1 vs ทองสถิตย์)</th><th class="text-c">สถานะ</th></tr></thead>
       <tbody>
         <tr><td>I. ค่าไฟฟ้า (Electrical)</td><td class="text-r">5.76</td><td class="text-r">5.01</td><td class="text-r">4.40</td><td class="text-r">+1.36 (24%)</td><td class="text-c"><span class="badge badge-win">ทองสถิตย์ ถูกกว่า</span></td></tr>
@@ -147,7 +177,7 @@ tr:hover td{background:rgba(108,92,231,.06)}
         <tr style="background:rgba(255,107,107,.05)"><td>III. ค่ากำจัดตะกอน (Sludge Disposal)</td><td class="text-r">57.54</td><td class="text-r">57.54</td><td class="text-r">0.26</td><td class="text-r"><strong>+57.28 (22,131%)</strong></td><td class="text-c"><span class="badge badge-lose">⚠️ ต่างกันมาก</span></td></tr>
         <tr style="font-weight:700;border-top:2px solid var(--accent)"><td>รวม Total OPEX</td><td class="text-r" style="color:var(--accent2)">68.66</td><td class="text-r" style="color:var(--blue)">67.91</td><td class="text-r" style="color:var(--green)">8.89</td><td class="text-r" style="color:var(--red)">+59.77</td><td class="text-c"><span class="badge badge-win">ทองสถิตย์ ถูกกว่า 87%</span></td></tr>
       </tbody>
-    </table>
+    </table></div>
     <div class="explain warn">
       <strong>⚠️ อธิบาย:</strong> ส่วนต่างส่วนใหญ่ (96%) มาจาก<strong>ค่ากำจัดตะกอน</strong>ที่ต่างกันมาก — Perfect คิดไว้ <strong>57.54 THB/m³</strong> ขณะที่ทองสถิตย์คิดเพียง <strong>0.26 THB/m³</strong>
       ซึ่ง<strong>ยังไม่สามารถสรุปได้ว่าเจ้าไหนถูกต้องกว่า</strong> เพราะอาจคิดจากฐานสมมติฐานที่ต่างกัน เช่น ปริมาณตะกอนที่เกิดขึ้น, ค่าขนส่ง, ค่ากำจัด ต้องขอรายละเอียดเพิ่มจากทั้งสองฝ่าย
@@ -190,7 +220,7 @@ tr:hover td{background:rgba(108,92,231,.06)}
       </div>
     </div>
     <!-- Summary comparison table below -->
-    <table style="margin-top:16px;font-size:.85rem">
+    <div class="table-scroll"><table style="margin-top:16px;font-size:.85rem">
       <thead><tr><th>หมวด</th><th>Perfect Opt.1</th><th>%</th><th>Perfect Opt.2</th><th>%</th><th>ทองสถิตย์</th><th>%</th></tr></thead>
       <tbody>
         <tr><td>⚡ ค่าไฟฟ้า</td><td>5.76</td><td>8.4%</td><td>5.01</td><td>7.4%</td><td style="color:var(--t)">4.40</td><td style="color:var(--t)">49.5%</td></tr>
@@ -198,7 +228,7 @@ tr:hover td{background:rgba(108,92,231,.06)}
         <tr><td>🗑️ ค่ากำจัดตะกอน</td><td>57.54</td><td style="color:#ff6b6b;font-weight:700">83.8%</td><td>57.54</td><td style="color:#ff6b6b;font-weight:700">84.7%</td><td style="color:var(--t)">0.26</td><td style="color:var(--t)">2.9%</td></tr>
         <tr style="font-weight:700;border-top:2px solid var(--border)"><td>รวม</td><td>68.66</td><td>100%</td><td>67.91</td><td>100%</td><td style="color:var(--t)">8.89</td><td style="color:var(--t)">100%</td></tr>
       </tbody>
-    </table>
+    </table></div>
     <div class="explain info" style="margin-top:12px">
       <strong>💡 อธิบาย:</strong> Perfect มีค่าตะกอนเป็น <strong>84%</strong> ของค่าใช้จ่ายรวม ขณะที่ทองสถิตย์มีค่าไฟฟ้า (<strong>49.5%</strong>) และสารเคมี (<strong>47.6%</strong>) เป็นสัดส่วนหลัก — สัดส่วนต่างกันอย่างมาก จุดนี้ต้องตรวจสอบว่าสมมติฐานค่าตะกอนเท่ากันหรือไม่
     </div>
@@ -225,7 +255,7 @@ tr:hover td{background:rgba(108,92,231,.06)}
       <strong>สูตรคำนวณ:</strong> ค่าไฟ = Unit Price (4.50 THB/kWh) × กำลังไฟ (kW) × ชั่วโมงทำงาน/วัน × 365 วัน/ปี<br>
       <strong>⚠️ จุดสังเกต:</strong> Screw Press Unit ทำงานแค่ <strong>20 h/d</strong> (ไม่ใช่ 24 h/d เหมือนตัวอื่น)
     </div>
-    <table>
+    <div class="table-scroll"><table>
       <thead><tr><th>#</th><th>อุปกรณ์</th><th class="text-r">Opt.1 kW</th><th class="text-r">Opt.1 THB/yr</th><th class="text-r">Opt.2 kW</th><th class="text-r">Opt.2 THB/yr</th><th class="text-c">หมายเหตุ</th></tr></thead>
       <tbody>
         <tr><td>1</td><td>Air Blower for EQ-AS Tank</td><td class="text-r">13</td><td class="text-r">512,460</td><td class="text-r">13</td><td class="text-r">512,460</td><td class="text-c"><span class="badge badge-tie">เท่ากัน</span></td></tr>
@@ -239,7 +269,7 @@ tr:hover td{background:rgba(108,92,231,.06)}
         <tr style="font-weight:700"><td></td><td>รวม Electrical Cost</td><td></td><td class="text-r" style="color:var(--accent2)">1,060,201</td><td></td><td class="text-r" style="color:var(--blue)">922,428</td><td class="text-c"><span class="badge badge-win">Opt.2 ถูกกว่า 13%</span></td></tr>
         <tr style="font-weight:700"><td></td><td>ต่อ m³ (÷ 183,960 m³/yr)</td><td></td><td class="text-r" style="color:var(--accent2)">5.76</td><td></td><td class="text-r" style="color:var(--blue)">5.01</td><td></td></tr>
       </tbody>
-    </table>
+    </table></div>
     <div class="explain">
       <strong>💡 อธิบายความต่าง Opt.1 vs Opt.2:</strong><br>
       • Opt.1 มี <strong>Screw Press</strong> (เครื่องรีดตะกอน 3.75 kW) + <strong>Chemical Dosing Pump</strong> → ค่าไฟรวม <strong>1,060,201</strong> THB/yr<br>
@@ -266,7 +296,7 @@ tr:hover td{background:rgba(108,92,231,.06)}
       <strong>อธิบาย:</strong> ทองสถิตย์ให้รายละเอียดสารเคมีครบ 4 ชนิด ขณะที่ Perfect ระบุเพียงตัวเลขรวม <strong>5.36 THB/m³</strong> ไม่มีรายละเอียดว่าใช้สารเคมีชนิดใดบ้าง<br>
       ค่าสารเคมีของทองสถิตย์คำนวณจากปริมาณน้ำ <strong>500 m³/d</strong>
     </div>
-    <table>
+    <div class="table-scroll"><table>
       <thead><tr><th>สารเคมี</th><th>สูตรคำนวณ (ทองสถิตย์)</th><th class="text-r">THB/day</th><th class="text-r">THB/m³</th><th>อธิบาย</th></tr></thead>
       <tbody>
         <tr><td>Ferric Chloride</td><td>0.2 kg/m³ × 500 m³ × 8.50 ฿/kg</td><td class="text-r">850</td><td class="text-r">1.70</td><td>สารช่วยตกตะกอน (Coagulant)</td></tr>
@@ -276,7 +306,7 @@ tr:hover td{background:rgba(108,92,231,.06)}
         <tr style="font-weight:700"><td>รวม (ทองสถิตย์)</td><td></td><td class="text-r" style="color:var(--green)">2,113</td><td class="text-r" style="color:var(--green)">4.23</td><td></td></tr>
         <tr style="font-weight:700;background:rgba(162,155,254,.05)"><td>รวม (Perfect ทั้ง 2 Opt)</td><td style="color:var(--muted)">— ไม่ระบุรายละเอียด —</td><td class="text-r" style="color:var(--accent2)">2,701*</td><td class="text-r" style="color:var(--accent2)">5.36</td><td style="font-size:.75rem">*คำนวณกลับจาก 5.36×504</td></tr>
       </tbody>
-    </table>
+    </table></div>
     <div class="explain warn">
       <strong>⚠️ ข้อสังเกต:</strong> Perfect ไม่ได้ให้สูตรคำนวณค่าสารเคมี จึงไม่สามารถตรวจสอบได้ว่าใช้สารเคมีชนิดเดียวกันหรือไม่ ผลต่าง 1.13 THB/m³ (21%) อาจเกิดจากสารเคมีต่างชนิด หรือ dosage rate ต่างกัน
     </div>
@@ -290,7 +320,7 @@ tr:hover td{background:rgba(108,92,231,.06)}
     <div class="section-explain" style="border-color:var(--red)">
       <strong>⚠️ ประเด็นสำคัญที่สุด:</strong> ค่ากำจัดตะกอนคือสาเหตุหลักที่ OPEX ต่างกันมาก — Perfect คิดไว้ <strong>57.54 THB/m³</strong> แต่ทองสถิตย์คิดเพียง <strong>0.26 THB/m³</strong> (ต่างกัน 221 เท่า!)
     </div>
-    <table>
+    <div class="table-scroll"><table>
       <thead><tr><th>รายการ</th><th class="text-r">Perfect (THB/m³)</th><th class="text-r">ทองสถิตย์ (THB/m³)</th><th>อธิบาย</th></tr></thead>
       <tbody>
         <tr><td>ค่ากำจัดตะกอน</td><td class="text-r">—</td><td class="text-r">0.14</td><td>500×12%×1,200÷1,000 = 72 ฿/day</td></tr>
@@ -299,7 +329,7 @@ tr:hover td{background:rgba(108,92,231,.06)}
         <tr style="font-weight:700"><td>คิดเป็นต่อวัน</td><td class="text-r" style="color:var(--red)">29,000 ฿/day</td><td class="text-r" style="color:var(--green)">132 ฿/day</td><td></td></tr>
         <tr style="font-weight:700"><td>คิดเป็นต่อปี</td><td class="text-r" style="color:var(--red)">10.59M ฿/yr</td><td class="text-r" style="color:var(--green)">48,180 ฿/yr</td><td></td></tr>
       </tbody>
-    </table>
+    </table></div>
     <div class="explain warn">
       <strong>⚠️ สาเหตุที่อาจต่างกัน:</strong><br>
       1. <strong>สมมติฐานปริมาณตะกอน</strong> — Perfect อาจประมาณปริมาณตะกอนสูงกว่ามาก (น้ำเสียสิ่งทอมีสารแขวนลอยสูง)<br>
@@ -334,7 +364,7 @@ tr:hover td{background:rgba(108,92,231,.06)}
 <div class="grid">
   <div class="card full sec-diff">
     <h2 style="color:#e17055">🔍 สรุปจุดแตกต่างสำคัญ</h2>
-    <table>
+    <div class="table-scroll"><table>
       <thead><tr><th>ประเด็น</th><th>Perfect</th><th>ทองสถิตย์</th><th>วิเคราะห์</th></tr></thead>
       <tbody>
         <tr><td>💰 Total OPEX<br><span style="font-size:.75rem;color:var(--muted)">(ค่าดำเนินการรวมทั้งหมดต่อลูกบาศก์เมตร)</span></td><td>67.91–68.66 THB/m³</td><td>8.89 THB/m³</td><td><span class="badge badge-win">ทองสถิตย์ ถูกกว่า 7.6x</span></td></tr>
@@ -348,7 +378,7 @@ tr:hover td{background:rgba(108,92,231,.06)}
         <tr><td>🏗️ ระบบ MBBR-AS<br><span style="font-size:.75rem;color:var(--muted)">(Moving Bed Biofilm Reactor + Activated Sludge — ระบบบำบัดทางชีวภาพ ใช้ตัวกลางลอยให้จุลินทรีย์เกาะ)</span></td><td>✅ ระบุใน OPEX Sheet</td><td>❓ ไม่ระบุในเอกสารนี้</td><td><span class="badge badge-tie">ต้องสอบถามเพิ่ม</span></td></tr>
         <tr><td>🔧 Screw Press<br><span style="font-size:.75rem;color:var(--muted)">(เครื่องรีดตะกอน — บีบน้ำออกจากตะกอนให้แห้งเพื่อลดปริมาตรก่อนนำไปกำจัด)</span></td><td>✅ มี (Opt.1 เท่านั้น)</td><td>❓ ไม่ระบุ</td><td><span class="badge badge-tie">อาจรวมอยู่ในค่าตะกอน</span></td></tr>
       </tbody>
-    </table>
+    </table></div>
   </div>
 </div>
 
@@ -391,34 +421,34 @@ tr:hover td{background:rgba(108,92,231,.06)}
       <!-- Perfect ขาด -->
       <div style="background:#fff;border:2px solid #a29bfe;border-radius:14px;padding:20px">
         <h3 style="color:#6c5ce7;margin-bottom:12px;font-size:1.05rem">🟣 Perfect ขาด:</h3>
-        <table style="width:100%;font-size:.82rem;border:1px solid #dde1e8">
+        <div class="table-scroll"><table style="width:100%;font-size:.82rem;border:1px solid #dde1e8">
           <thead><tr><th style="background:#f0eeff;width:30px">#</th><th style="background:#f0eeff">รายการที่ขาด</th><th style="background:#f0eeff">ทำไมต้องมี</th></tr></thead>
           <tbody>
             <tr><td class="text-c">1</td><td><strong>รายละเอียดสารเคมี</strong><br><span style="color:var(--muted);font-size:.75rem">ชนิด, dosage, ราคา/kg</span></td><td>มีแค่ตัวเลขรวม 5.36 THB/m³ ตรวจสอบไม่ได้</td></tr>
             <tr><td class="text-c">2</td><td><strong>รายละเอียดค่ากำจัดตะกอน</strong><br><span style="color:var(--muted);font-size:.75rem">ปริมาณ kg/d, ค่ากำจัด/ตัน, ค่าขนส่ง</span></td><td>มีแค่ตัวเลขรวม 57.54 THB/m³ ซึ่งสูงมาก ไม่รู้ว่าคิดจากอะไร</td></tr>
             <tr><td class="text-c">3</td><td><strong>Sludge Mass Balance</strong></td><td>ไม่รู้ว่าตะกอนเกิดขึ้นเท่าไหร่ต่อวัน</td></tr>
           </tbody>
-        </table>
+        </table></div></div></div>
       </div>
 
       <!-- ทองสถิตย์ ขาด -->
       <div style="background:#fff;border:2px solid #6dd5b8;border-radius:14px;padding:20px">
         <h3 style="color:#00956f;margin-bottom:12px;font-size:1.05rem">🟢 ทองสถิตย์ ขาด:</h3>
-        <table style="width:100%;font-size:.82rem;border:1px solid #dde1e8">
+        <div class="table-scroll"><table style="width:100%;font-size:.82rem;border:1px solid #dde1e8">
           <thead><tr><th style="background:#e4f9f3;width:30px">#</th><th style="background:#e4f9f3">รายการที่ขาด</th><th style="background:#e4f9f3">ทำไมต้องมี</th></tr></thead>
           <tbody>
             <tr><td class="text-c">1</td><td><strong>รายละเอียดอุปกรณ์ไฟฟ้า</strong><br><span style="color:var(--muted);font-size:.75rem">ชนิด, kW ของแต่ละตัว</span></td><td>มีแค่รวม 550 units/day ตรวจสอบไม่ได้</td></tr>
             <tr><td class="text-c">2</td><td><strong>ระบบบำบัดที่ใช้</strong><br><span style="color:var(--muted);font-size:.75rem">MBBR-AS หรือระบบอื่น</span></td><td>ไม่ได้ระบุประเภทระบบบำบัดที่ใช้</td></tr>
             <tr><td class="text-c">3</td><td><strong>สมมติฐานตะกอน "12%"</strong><br><span style="color:var(--muted);font-size:.75rem">500×12%×ค่ากำจัด</span></td><td>12% ของอะไร? ไม่ชัดเจน</td></tr>
           </tbody>
-        </table>
+        </table></div></div></div>
       </div>
     </div>
 
     <!-- ทั้งสองเจ้าขาด -->
     <div style="background:#fff3cd;border:2px solid #f0d080;border-radius:14px;padding:20px;margin-top:20px">
       <h3 style="color:#b37400;margin-bottom:12px;font-size:1.05rem;text-align:center">⚠️ ทั้งสองเจ้าขาด — ต้องตกลงให้ตรงกันก่อนเทียบ</h3>
-      <table style="width:100%;font-size:.82rem;border:1px solid #dde1e8">
+      <div class="table-scroll"><table style="width:100%;font-size:.82rem;border:1px solid #dde1e8">
         <thead><tr><th style="background:#fff8e6;width:30px">#</th><th style="background:#fff8e6">รายการ</th><th style="background:#fff8e6">สิ่งที่ต้องตกลงให้ตรงกัน</th></tr></thead>
         <tbody>
           <tr><td class="text-c">1</td><td><strong>คุณภาพน้ำเสียขาเข้า (Influent)</strong></td><td>BOD, COD, SS, Color, pH</td></tr>
@@ -429,7 +459,7 @@ tr:hover td{background:rgba(108,92,231,.06)}
           <tr><td class="text-c">6</td><td><strong>ค่าแรงงาน (Manpower)</strong></td><td>ทั้งสองไม่ได้รวมค่าคนเดินระบบ</td></tr>
           <tr><td class="text-c">7</td><td><strong>Sludge Mass Balance</strong></td><td>ปริมาณตะกอนจริงที่ใช้คำนวณ (kg/day)</td></tr>
         </tbody>
-      </table>
+      </table></div></div>
     </div>
 
   </div>
