@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WWTP Operating Cost Comparison — Perfect vs ทองสถิตย์</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#f0f2f5;--card:#ffffff;--card2:#f5f6f8;--border:#dde1e8;--text:#1a1d2e;--muted:#555b6e;--accent:#6c5ce7;--accent2:#a29bfe;--green:#00956f;--red:#d63031;--orange:#d68910;--blue:#0984e3;--gradient:linear-gradient(135deg,#6c5ce7,#a29bfe);--p1:#6c5ce7;--p2:#0984e3;--t:#00956f}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:24px}
+.container{max-width:1400px;margin:0 auto}
+h1{font-size:2rem;font-weight:800;background:var(--gradient);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-align:center;margin-bottom:4px}
+.subtitle{text-align:center;color:var(--muted);margin-bottom:32px;font-size:.9rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;margin-bottom:24px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;transition:transform .2s,box-shadow .2s}
+.card.sec-table{border:2px solid #b8b0f0;background:#eee9ff}
+.card.sec-chart{border:2px solid #90c4f7;background:#e3f1ff}
+.card.sec-pie{border:2px solid #c4bffa;background:#f0eeff}
+.card.sec-elec{border:2px solid #f0d080;background:#fff8e6}
+.card.sec-chem{border:2px solid #6dd5b8;background:#e4f9f3}
+.card.sec-sludge{border:2px solid #f0908a;background:#ffeceb}
+.card.sec-yearly{border:2px solid #7ab8e8;background:#e7f2fc}
+.card.sec-diff{border:2px solid #e8a08a;background:#fff0ec}
+.card:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(0,0,0,.08)}
+.card h2{font-size:1.35rem;font-weight:800;margin-bottom:20px;display:flex;align-items:center;gap:10px;padding-bottom:12px;border-bottom:3px solid rgba(108,92,231,.25);letter-spacing:-.3px}
+.full{grid-column:1/-1}
+.score-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;text-align:center}
+.sc .label{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.sc .val{font-size:2rem;font-weight:800}
+.sc .unit{font-size:.8rem;color:var(--muted)}
+.sc.highlight{border-color:var(--green);background:rgba(0,184,148,.06)}
+.winner{display:inline-block;background:var(--green);color:#fff;font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:20px;margin-left:6px}
+table{width:100%;border-collapse:collapse;font-size:.85rem;border:1.5px solid var(--border)}
+th{background:var(--card2);padding:10px 12px;text-align:left;font-weight:600;border:1px solid var(--border);white-space:nowrap}
+td{padding:10px 12px;border:1px solid var(--border)}
+tr:hover td{background:rgba(108,92,231,.06)}
+.text-r{text-align:right}
+.text-c{text-align:center}
+.badge{display:inline-block;padding:2px 8px;border-radius:8px;font-size:.7rem;font-weight:600}
+.badge-win{background:rgba(0,149,111,.12);color:#00734d}
+.badge-lose{background:rgba(214,48,49,.12);color:#c0392b}
+.badge-tie{background:rgba(214,137,16,.12);color:#b37400}
+.badge-miss{background:rgba(85,91,110,.12);color:#555b6e}
+.chart-wrap{position:relative;height:320px}
+.explain{background:#f5f6f8;border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:14px 18px;margin-top:16px;font-size:.82rem;line-height:1.7;color:var(--muted)}
+.explain strong{color:var(--text)}
+.explain .icon{margin-right:4px}
+.warn{border-left-color:var(--orange)}
+.info{border-left-color:var(--blue)}
+.ok{border-left-color:var(--green)}
+.verify{display:inline-flex;align-items:center;gap:4px;font-size:.7rem;padding:2px 8px;border-radius:6px;background:rgba(0,184,148,.1);color:var(--green);margin-left:8px}
+.verdict{background:#e8f8f3;border:2px solid #6dd5b8;border-radius:16px;padding:28px;margin-top:24px}
+.verdict h2{font-size:1.3rem;color:var(--green);margin-bottom:12px;text-align:center}
+.verdict>p{color:var(--muted);line-height:1.7;max-width:900px;margin:0 auto;text-align:center}
+.pros-cons{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.pros-cons div{padding:16px;border-radius:12px}
+.pros-cons .pros{background:rgba(0,149,111,.08)}
+.pros-cons .cons{background:rgba(214,48,49,.08)}
+.pros-cons h3{font-size:.85rem;margin-bottom:8px}
+.pros-cons ul{font-size:.8rem;color:var(--muted);padding-left:18px;line-height:1.8}
+.section-explain{margin-bottom:20px;padding:16px 20px;background:#f5f3ff;border:1px solid rgba(108,92,231,.2);border-radius:12px;font-size:.85rem;line-height:1.7;color:var(--muted)}
+.section-explain strong{color:var(--text)}
+@media(max-width:768px){.pros-cons{grid-template-columns:1fr}.chart-wrap{height:260px}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>⚡ WWTP Operating Cost Comparison</h1>
+<p class="subtitle">Wastewater Treatment Plant Phase 2 — Golden Thread (โกลเด้น เธร็ด) | Capacity: 21 m³/h = 504 m³/d</p>
+
+<!-- ========== DATA SOURCES ========== -->
+<div class="section-explain">
+  📂 <strong>ที่มาของข้อมูล:</strong><br>
+  • <strong>Perfect</strong> — จากเอกสาร Operating Expense (OPEX) Sheet ลงวันที่ 07/05/2025 มี 2 Option (ตารางบน = Opt.1 มี 7 อุปกรณ์, ตารางล่าง = Opt.2 มี 6 อุปกรณ์)<br>
+  • <strong>ทองสถิตย์</strong> — จากเอกสาร "ตอบคำถามลูกค้า โกลเด้นเธร็ด WWTP" ข้อ 4 หน้าที่ 2 แสดงรายละเอียดค่าสารเคมี ค่าไฟฟ้า และค่ากำจัดตะกอน<br>
+  • <strong>หมายเหตุ:</strong> Perfect คิดน้ำเสีย <strong>504 m³/d</strong> ขณะที่ทองสถิตย์คิดที่ <strong>500 m³/d</strong> (ต่างกันเล็กน้อย)
+</div>
+
+<!-- ========== SCORE CARDS ========== -->
+<div class="score-cards">
+  <div class="sc"><div class="label">Perfect Option 1</div><div class="val" style="color:var(--accent2)">68.66</div><div class="unit">THB/m³</div></div>
+  <div class="sc"><div class="label">Perfect Option 2</div><div class="val" style="color:var(--blue)">67.91</div><div class="unit">THB/m³</div></div>
+  <div class="sc highlight"><div class="label">ทองสถิตย์ <span class="winner">ถูกที่สุด</span></div><div class="val" style="color:var(--green)">8.89</div><div class="unit">THB/m³</div></div>
+  <div class="sc"><div class="label">ส่วนต่าง (Opt.1 vs ทองสถิตย์)</div><div class="val" style="color:var(--red)">59.77</div><div class="unit">THB/m³ (7.7 เท่า)</div></div>
+</div>
+
+<!-- ========== MAIN COMPARISON TABLE ========== -->
+<div class="grid">
+  <div class="card full sec-table">
+    <h2>📊 เปรียบเทียบค่าใช้จ่ายแต่ละหมวด (THB/m³)</h2>
+    <table>
+      <thead><tr><th>หมวดค่าใช้จ่าย</th><th class="text-r">Perfect Opt.1</th><th class="text-r">Perfect Opt.2</th><th class="text-r">ทองสถิตย์</th><th class="text-c">ผลต่าง<br>(Opt.1 vs ทองสถิตย์)</th><th class="text-c">สถานะ</th></tr></thead>
+      <tbody>
+        <tr><td>I. ค่าไฟฟ้า (Electrical)</td><td class="text-r">5.76</td><td class="text-r">5.01</td><td class="text-r">4.40</td><td class="text-r">+1.36 (24%)</td><td class="text-c"><span class="badge badge-win">ทองสถิตย์ ถูกกว่า</span></td></tr>
+        <tr><td>II. ค่าสารเคมี (Chemical)</td><td class="text-r">5.36</td><td class="text-r">5.36</td><td class="text-r">4.23</td><td class="text-r">+1.13 (21%)</td><td class="text-c"><span class="badge badge-win">ทองสถิตย์ ถูกกว่า</span></td></tr>
+        <tr style="background:rgba(255,107,107,.05)"><td>III. ค่ากำจัดตะกอน (Sludge Disposal)</td><td class="text-r">57.54</td><td class="text-r">57.54</td><td class="text-r">0.26</td><td class="text-r"><strong>+57.28 (22,131%)</strong></td><td class="text-c"><span class="badge badge-lose">⚠️ ต่างกันมาก</span></td></tr>
+        <tr style="font-weight:700;border-top:2px solid var(--accent)"><td>รวม Total OPEX</td><td class="text-r" style="color:var(--accent2)">68.66</td><td class="text-r" style="color:var(--blue)">67.91</td><td class="text-r" style="color:var(--green)">8.89</td><td class="text-r" style="color:var(--red)">+59.77</td><td class="text-c"><span class="badge badge-win">ทองสถิตย์ ถูกกว่า 87%</span></td></tr>
+      </tbody>
+    </table>
+    <div class="explain warn">
+      <strong>⚠️ อธิบาย:</strong> ส่วนต่างส่วนใหญ่ (96%) มาจาก<strong>ค่ากำจัดตะกอน</strong>ที่ต่างกันมาก — Perfect คิดไว้ <strong>57.54 THB/m³</strong> ขณะที่ทองสถิตย์คิดเพียง <strong>0.26 THB/m³</strong>
+      ซึ่ง<strong>ยังไม่สามารถสรุปได้ว่าเจ้าไหนถูกต้องกว่า</strong> เพราะอาจคิดจากฐานสมมติฐานที่ต่างกัน เช่น ปริมาณตะกอนที่เกิดขึ้น, ค่าขนส่ง, ค่ากำจัด ต้องขอรายละเอียดเพิ่มจากทั้งสองฝ่าย
+    </div>
+  </div>
+</div>
+
+<!-- ========== CHARTS ROW 1 ========== -->
+<div class="grid">
+  <div class="card full">
+    <h2 style="color:#74b9ff">📊 ค่าใช้จ่ายรายวัน (THB/day)</h2>
+    <div class="chart-wrap" style="height:380px"><canvas id="dailyChart"></canvas></div>
+    <div class="explain info">
+      <strong>💡 อธิบาย:</strong> กราฟแสดงค่าใช้จ่ายต่อวัน — Perfect ตกวันละ ~34,600 บาท ขณะที่ทองสถิตย์เพียง ~4,445 บาท ห่างกัน ~30,000 บาท/วัน
+    </div>
+  </div>
+  <div class="card sec-pie" style="grid-column:1/-1">
+    <h2>📈 สัดส่วนค่าใช้จ่าย (%) — แยกแต่ละเจ้า</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;margin-top:12px">
+      <!-- Perfect Opt.1 -->
+      <div style="text-align:center">
+        <h3 style="color:var(--p1);margin-bottom:4px;font-size:1rem">🟣 Perfect Opt.1</h3>
+        <p style="color:var(--muted);font-size:.8rem;margin-bottom:2px">รวม <strong style="color:var(--p1)">68.66 THB/m³</strong> | <strong style="color:var(--red)">34,605 THB/day</strong></p>
+        <p style="font-size:.78rem;margin-bottom:8px">คิดที่น้ำเสีย <strong style="color:var(--p1)">504 m³/d</strong></p>
+        <div class="chart-wrap" style="height:280px"><canvas id="pieP1"></canvas></div>
+      </div>
+      <!-- Perfect Opt.2 -->
+      <div style="text-align:center">
+        <h3 style="color:var(--p2);margin-bottom:4px;font-size:1rem">🔵 Perfect Opt.2</h3>
+        <p style="color:var(--muted);font-size:.8rem;margin-bottom:2px">รวม <strong style="color:var(--p2)">67.91 THB/m³</strong> | <strong style="color:var(--red)">34,226 THB/day</strong></p>
+        <p style="font-size:.78rem;margin-bottom:8px">คิดที่น้ำเสีย <strong style="color:var(--p2)">504 m³/d</strong></p>
+        <div class="chart-wrap" style="height:280px"><canvas id="pieP2"></canvas></div>
+      </div>
+      <!-- ทองสถิตย์ -->
+      <div style="text-align:center">
+        <h3 style="color:var(--t);margin-bottom:4px;font-size:1rem">🟢 ทองสถิตย์</h3>
+        <p style="color:var(--muted);font-size:.8rem;margin-bottom:2px">รวม <strong style="color:var(--t)">8.89 THB/m³</strong> | <strong style="color:var(--t)">4,445 THB/day</strong></p>
+        <p style="font-size:.78rem;margin-bottom:8px">คิดที่น้ำเสีย <strong style="color:var(--t)">500 m³/d</strong></p>
+        <div class="chart-wrap" style="height:280px"><canvas id="pieTS"></canvas></div>
+      </div>
+    </div>
+    <!-- Summary comparison table below -->
+    <table style="margin-top:16px;font-size:.85rem">
+      <thead><tr><th>หมวด</th><th>Perfect Opt.1</th><th>%</th><th>Perfect Opt.2</th><th>%</th><th>ทองสถิตย์</th><th>%</th></tr></thead>
+      <tbody>
+        <tr><td>⚡ ค่าไฟฟ้า</td><td>5.76</td><td>8.4%</td><td>5.01</td><td>7.4%</td><td style="color:var(--t)">4.40</td><td style="color:var(--t)">49.5%</td></tr>
+        <tr><td>🧪 ค่าสารเคมี</td><td>5.36</td><td>7.8%</td><td>5.36</td><td>7.9%</td><td style="color:var(--t)">4.23</td><td style="color:var(--t)">47.6%</td></tr>
+        <tr><td>🗑️ ค่ากำจัดตะกอน</td><td>57.54</td><td style="color:#ff6b6b;font-weight:700">83.8%</td><td>57.54</td><td style="color:#ff6b6b;font-weight:700">84.7%</td><td style="color:var(--t)">0.26</td><td style="color:var(--t)">2.9%</td></tr>
+        <tr style="font-weight:700;border-top:2px solid var(--border)"><td>รวม</td><td>68.66</td><td>100%</td><td>67.91</td><td>100%</td><td style="color:var(--t)">8.89</td><td style="color:var(--t)">100%</td></tr>
+      </tbody>
+    </table>
+    <div class="explain info" style="margin-top:12px">
+      <strong>💡 อธิบาย:</strong> Perfect มีค่าตะกอนเป็น <strong>84%</strong> ของค่าใช้จ่ายรวม ขณะที่ทองสถิตย์มีค่าไฟฟ้า (<strong>49.5%</strong>) และสารเคมี (<strong>47.6%</strong>) เป็นสัดส่วนหลัก — สัดส่วนต่างกันอย่างมาก จุดนี้ต้องตรวจสอบว่าสมมติฐานค่าตะกอนเท่ากันหรือไม่
+    </div>
+  </div>
+</div>
+
+<!-- ========== BAR CHART ========== -->
+<div class="grid">
+  <div class="card full sec-chart">
+    <h2 style="color:#74b9ff">📊 เปรียบเทียบค่าใช้จ่ายต่อ m³</h2>
+    <div class="chart-wrap"><canvas id="barChart"></canvas></div>
+    <div class="explain ok">
+      <strong>✅ การตรวจสอบ:</strong> ตัวเลขตรงกับเอกสารต้นฉบับทุกรายการ — Perfect Opt.1 = 68.66 ✓, Opt.2 = 67.91 ✓, ทองสถิตย์ = 8.89 ✓
+    </div>
+  </div>
+</div>
+
+<!-- ========== ELECTRICAL DETAIL ========== -->
+<div class="grid">
+  <div class="card full sec-elec">
+    <h2 style="color:#fdcb6e">⚡ รายละเอียด Electrical Cost — เปรียบเทียบอุปกรณ์ Perfect</h2>
+    <div class="section-explain">
+      <strong>อธิบาย:</strong> Perfect มีเอกสาร 2 Option — <strong>Option 1</strong> มี 7 อุปกรณ์ (รวม Chemical Dosing Pump + Screw Press) ส่วน <strong>Option 2</strong> มี 6 อุปกรณ์ (มี Scrapper of Sedimentation แทน) ทำให้ค่าไฟต่างกัน<br>
+      <strong>สูตรคำนวณ:</strong> ค่าไฟ = Unit Price (4.50 THB/kWh) × กำลังไฟ (kW) × ชั่วโมงทำงาน/วัน × 365 วัน/ปี<br>
+      <strong>⚠️ จุดสังเกต:</strong> Screw Press Unit ทำงานแค่ <strong>20 h/d</strong> (ไม่ใช่ 24 h/d เหมือนตัวอื่น)
+    </div>
+    <table>
+      <thead><tr><th>#</th><th>อุปกรณ์</th><th class="text-r">Opt.1 kW</th><th class="text-r">Opt.1 THB/yr</th><th class="text-r">Opt.2 kW</th><th class="text-r">Opt.2 THB/yr</th><th class="text-c">หมายเหตุ</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Air Blower for EQ-AS Tank</td><td class="text-r">13</td><td class="text-r">512,460</td><td class="text-r">13</td><td class="text-r">512,460</td><td class="text-c"><span class="badge badge-tie">เท่ากัน</span></td></tr>
+        <tr><td>2</td><td>Influence Submersible Pump</td><td class="text-r">4</td><td class="text-r">157,680</td><td class="text-r">4</td><td class="text-r">157,680</td><td class="text-c"><span class="badge badge-tie">เท่ากัน</span></td></tr>
+        <tr><td>3</td><td>Treated Water Centrifugal Pump</td><td class="text-r">2.2</td><td class="text-r">86,724</td><td class="text-r">2.2</td><td class="text-r">86,724</td><td class="text-c"><span class="badge badge-tie">เท่ากัน</span></td></tr>
+        <tr><td>4</td><td>Sludge Transfer Self-Priming Pump</td><td class="text-r">2.2</td><td class="text-r">86,724</td><td class="text-r">2.2</td><td class="text-r">86,724</td><td class="text-c"><span class="badge badge-tie">เท่ากัน</span></td></tr>
+        <tr style="background:rgba(253,203,110,.05)"><td>5</td><td>Chemical Dosing Pump</td><td class="text-r">0.37</td><td class="text-r">14,585</td><td class="text-r">—</td><td class="text-r">—</td><td class="text-c"><span class="badge badge-miss">เฉพาะ Opt.1</span></td></tr>
+        <tr style="background:rgba(253,203,110,.05)"><td>5</td><td>Scrapper of Sedimentation</td><td class="text-r">—</td><td class="text-r">—</td><td class="text-r">1</td><td class="text-r">39,420</td><td class="text-c"><span class="badge badge-miss">เฉพาะ Opt.2</span></td></tr>
+        <tr><td>6</td><td>Instrument & Control</td><td class="text-r">2</td><td class="text-r">78,840</td><td class="text-r">1</td><td class="text-r">39,420</td><td class="text-c"><span class="badge badge-lose">Opt.1 แพงกว่า 2x</span></td></tr>
+        <tr style="background:rgba(255,107,107,.05)"><td>7</td><td>Screw Press Unit <span style="font-size:.7rem;color:var(--orange)">(20h/d)</span></td><td class="text-r">3.75</td><td class="text-r">123,188</td><td class="text-r">—</td><td class="text-r">—</td><td class="text-c"><span class="badge badge-miss">เฉพาะ Opt.1</span></td></tr>
+        <tr style="font-weight:700"><td></td><td>รวม Electrical Cost</td><td></td><td class="text-r" style="color:var(--accent2)">1,060,201</td><td></td><td class="text-r" style="color:var(--blue)">922,428</td><td class="text-c"><span class="badge badge-win">Opt.2 ถูกกว่า 13%</span></td></tr>
+        <tr style="font-weight:700"><td></td><td>ต่อ m³ (÷ 183,960 m³/yr)</td><td></td><td class="text-r" style="color:var(--accent2)">5.76</td><td></td><td class="text-r" style="color:var(--blue)">5.01</td><td></td></tr>
+      </tbody>
+    </table>
+    <div class="explain">
+      <strong>💡 อธิบายความต่าง Opt.1 vs Opt.2:</strong><br>
+      • Opt.1 มี <strong>Screw Press</strong> (เครื่องรีดตะกอน 3.75 kW) + <strong>Chemical Dosing Pump</strong> → ค่าไฟรวม <strong>1,060,201</strong> THB/yr<br>
+      • Opt.2 ไม่มี Screw Press แต่เพิ่ม <strong>Scrapper of Sedimentation</strong> + ลด Instrument & Control ลงครึ่งหนึ่ง → ค่าไฟรวม <strong>922,428</strong> THB/yr<br>
+      • <strong>ทองสถิตย์</strong>ไม่ได้ให้รายละเอียดอุปกรณ์ไฟฟ้า ระบุเพียงค่าไฟรวม 550 units/day × 4.00 THB/unit = <strong>2,200 THB/day</strong> (4.40 THB/m³)<br>
+      • <strong>จุดสังเกต:</strong> ทองสถิตย์ใช้ค่าไฟ <strong>4.00</strong> THB/unit ขณะที่ Perfect ใช้ <strong>4.50</strong> THB/kWh → ฐานราคาไฟต่างกัน 12.5%
+    </div>
+  </div>
+</div>
+
+<!-- ========== ELECTRICAL COMPARISON CHART ========== -->
+<div class="grid">
+  <div class="card full sec-elec">
+    <h2 style="color:#fdcb6e">⚡ กราฟเปรียบเทียบ Electrical Cost ต่อปี (THB/yr)</h2>
+    <div class="chart-wrap"><canvas id="elecChart"></canvas></div>
+  </div>
+</div>
+
+<!-- ========== CHEMICAL DETAIL ========== -->
+<div class="grid">
+  <div class="card full sec-chem">
+    <h2 style="color:#00b894">🧪 รายละเอียด Chemical Cost</h2>
+    <div class="section-explain">
+      <strong>อธิบาย:</strong> ทองสถิตย์ให้รายละเอียดสารเคมีครบ 4 ชนิด ขณะที่ Perfect ระบุเพียงตัวเลขรวม <strong>5.36 THB/m³</strong> ไม่มีรายละเอียดว่าใช้สารเคมีชนิดใดบ้าง<br>
+      ค่าสารเคมีของทองสถิตย์คำนวณจากปริมาณน้ำ <strong>500 m³/d</strong>
+    </div>
+    <table>
+      <thead><tr><th>สารเคมี</th><th>สูตรคำนวณ (ทองสถิตย์)</th><th class="text-r">THB/day</th><th class="text-r">THB/m³</th><th>อธิบาย</th></tr></thead>
+      <tbody>
+        <tr><td>Ferric Chloride</td><td>0.2 kg/m³ × 500 m³ × 8.50 ฿/kg</td><td class="text-r">850</td><td class="text-r">1.70</td><td>สารช่วยตกตะกอน (Coagulant)</td></tr>
+        <tr><td>NaOH (โซดาไฟ)</td><td>0.15 kg/m³ × 500 m³ × 13 ฿/kg</td><td class="text-r">975</td><td class="text-r">1.95</td><td>ปรับ pH</td></tr>
+        <tr><td>Polymer</td><td>0.004 kg/m³ × 500 m³ × 105 ฿/kg</td><td class="text-r">210</td><td class="text-r">0.42</td><td>ช่วยจับตะกอน (Flocculant)</td></tr>
+        <tr><td>Cat-Polymer</td><td>0.01 × 500 × 12% × 130 ฿/kg</td><td class="text-r">78</td><td class="text-r">0.16</td><td>Cationic Polymer สำหรับรีดตะกอน</td></tr>
+        <tr style="font-weight:700"><td>รวม (ทองสถิตย์)</td><td></td><td class="text-r" style="color:var(--green)">2,113</td><td class="text-r" style="color:var(--green)">4.23</td><td></td></tr>
+        <tr style="font-weight:700;background:rgba(162,155,254,.05)"><td>รวม (Perfect ทั้ง 2 Opt)</td><td style="color:var(--muted)">— ไม่ระบุรายละเอียด —</td><td class="text-r" style="color:var(--accent2)">2,701*</td><td class="text-r" style="color:var(--accent2)">5.36</td><td style="font-size:.75rem">*คำนวณกลับจาก 5.36×504</td></tr>
+      </tbody>
+    </table>
+    <div class="explain warn">
+      <strong>⚠️ ข้อสังเกต:</strong> Perfect ไม่ได้ให้สูตรคำนวณค่าสารเคมี จึงไม่สามารถตรวจสอบได้ว่าใช้สารเคมีชนิดเดียวกันหรือไม่ ผลต่าง 1.13 THB/m³ (21%) อาจเกิดจากสารเคมีต่างชนิด หรือ dosage rate ต่างกัน
+    </div>
+  </div>
+</div>
+
+<!-- ========== SLUDGE DETAIL ========== -->
+<div class="grid">
+  <div class="card full sec-sludge">
+    <h2 style="color:#ff6b6b">🗑️ วิเคราะห์ค่ากำจัดตะกอน (Sludge Disposal) — จุดต่างหลัก</h2>
+    <div class="section-explain" style="border-color:var(--red)">
+      <strong>⚠️ ประเด็นสำคัญที่สุด:</strong> ค่ากำจัดตะกอนคือสาเหตุหลักที่ OPEX ต่างกันมาก — Perfect คิดไว้ <strong>57.54 THB/m³</strong> แต่ทองสถิตย์คิดเพียง <strong>0.26 THB/m³</strong> (ต่างกัน 221 เท่า!)
+    </div>
+    <table>
+      <thead><tr><th>รายการ</th><th class="text-r">Perfect (THB/m³)</th><th class="text-r">ทองสถิตย์ (THB/m³)</th><th>อธิบาย</th></tr></thead>
+      <tbody>
+        <tr><td>ค่ากำจัดตะกอน</td><td class="text-r">—</td><td class="text-r">0.14</td><td>500×12%×1,200÷1,000 = 72 ฿/day</td></tr>
+        <tr><td>ค่าขนส่งตะกอน</td><td class="text-r">—</td><td class="text-r">0.12</td><td>500×12%×1,000÷1,000 = 60 ฿/day</td></tr>
+        <tr style="font-weight:700"><td>รวม Sludge Cost</td><td class="text-r" style="color:var(--red)">57.54</td><td class="text-r" style="color:var(--green)">0.26</td><td style="color:var(--red)">ต่างกัน 221 เท่า</td></tr>
+        <tr style="font-weight:700"><td>คิดเป็นต่อวัน</td><td class="text-r" style="color:var(--red)">29,000 ฿/day</td><td class="text-r" style="color:var(--green)">132 ฿/day</td><td></td></tr>
+        <tr style="font-weight:700"><td>คิดเป็นต่อปี</td><td class="text-r" style="color:var(--red)">10.59M ฿/yr</td><td class="text-r" style="color:var(--green)">48,180 ฿/yr</td><td></td></tr>
+      </tbody>
+    </table>
+    <div class="explain warn">
+      <strong>⚠️ สาเหตุที่อาจต่างกัน:</strong><br>
+      1. <strong>สมมติฐานปริมาณตะกอน</strong> — Perfect อาจประมาณปริมาณตะกอนสูงกว่ามาก (น้ำเสียสิ่งทอมีสารแขวนลอยสูง)<br>
+      2. <strong>Scope ต่างกัน</strong> — Perfect อาจรวมค่ากำจัดตะกอนเคมี (Chemical Sludge) จากระบบ DAF/Chemical Pre-treatment ด้วย ขณะที่ทองสถิตย์อาจคิดเฉพาะ Excess Biological Sludge<br>
+      3. <strong>ค่ากำจัดต่อตัน</strong> — Perfect อาจใช้ค่ากำจัดที่แพงกว่า (ตะกอนอุตสาหกรรมที่มีสารเคมีต้องกำจัดเป็นกากอุตสาหกรรม ซึ่งแพงกว่ามาก)<br>
+      4. <strong>วิธีคำนวณ</strong> — ทองสถิตย์ใช้สูตร 500×12%×ค่ากำจัด ซึ่งอาจเป็นการประมาณที่ต่ำเกินไป<br><br>
+      <strong style="color:var(--orange)">👉 คำแนะนำ: ต้องขอ Sludge Mass Balance จากทั้งสองบริษัทเพื่อเปรียบเทียบบนฐานเดียวกัน</strong>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SLUDGE COMPARISON CHART ========== -->
+<div class="grid">
+  <div class="card full sec-sludge">
+    <h2 style="color:#ff6b6b">🗑️ กราฟเปรียบเทียบค่ากำจัดตะกอน (THB/day)</h2>
+    <div class="chart-wrap"><canvas id="sludgeChart"></canvas></div>
+  </div>
+</div>
+
+<!-- ========== YEARLY CHART ========== -->
+<div class="grid">
+  <div class="card full sec-yearly">
+    <h2 style="color:#0984e3">📉 ค่าใช้จ่ายรายปี (THB/yr)</h2>
+    <div class="chart-wrap"><canvas id="yearlyChart"></canvas></div>
+    <div class="explain info">
+      <strong>💡 อธิบาย:</strong> กราฟ Stacked Bar แสดงค่าใช้จ่ายรายปีรวม — Perfect ตกราวปีละ <strong>12.5-12.6 ล้านบาท</strong> ขณะที่ทองสถิตย์เพียง <strong>~1.6 ล้านบาท</strong> ส่วนสีแดง (Sludge) ของ Perfect ครองสัดส่วนใหญ่สุด
+    </div>
+  </div>
+</div>
+
+<!-- ========== KEY DIFFERENCES ========== -->
+<div class="grid">
+  <div class="card full sec-diff">
+    <h2 style="color:#e17055">🔍 สรุปจุดแตกต่างสำคัญ</h2>
+    <table>
+      <thead><tr><th>ประเด็น</th><th>Perfect</th><th>ทองสถิตย์</th><th>วิเคราะห์</th></tr></thead>
+      <tbody>
+        <tr><td>💰 Total OPEX<br><span style="font-size:.75rem;color:var(--muted)">(ค่าดำเนินการรวมทั้งหมดต่อลูกบาศก์เมตร)</span></td><td>67.91–68.66 THB/m³</td><td>8.89 THB/m³</td><td><span class="badge badge-win">ทองสถิตย์ ถูกกว่า 7.6x</span></td></tr>
+        <tr><td>🗑️ Sludge Disposal<br><span style="font-size:.75rem;color:var(--muted)">(ค่ากำจัดตะกอน — กากของเสียที่เกิดจากการบำบัด ต้องขนไปกำจัดนอกโรงงาน)</span></td><td>57.54 THB/m³ (84%)</td><td>0.26 THB/m³ (3%)</td><td><span class="badge badge-lose">ต่างกันมาก — ต้องตรวจสอบ</span></td></tr>
+        <tr><td>⚡ Electrical<br><span style="font-size:.75rem;color:var(--muted)">(ค่าไฟฟ้า — พลังงานที่ใช้เดินเครื่องปั๊ม, เครื่องเป่าอากาศ, เครื่องรีดตะกอน ฯลฯ)</span></td><td>5.01–5.76 THB/m³</td><td>4.40 THB/m³</td><td><span class="badge badge-win">ทองสถิตย์ ถูกกว่า 14-24%</span></td></tr>
+        <tr><td>🧪 Chemical<br><span style="font-size:.75rem;color:var(--muted)">(ค่าสารเคมี — Ferric Chloride ตกตะกอน, NaOH ปรับ pH, Polymer จับตะกอน)</span></td><td>5.36 THB/m³</td><td>4.23 THB/m³</td><td><span class="badge badge-win">ทองสถิตย์ ถูกกว่า 21%</span></td></tr>
+        <tr><td>💡 ค่าไฟ/unit<br><span style="font-size:.75rem;color:var(--muted)">(อัตราค่าไฟฟ้าต่อหน่วย — ราคาที่ใช้คำนวณค่าพลังงาน)</span></td><td>4.50 THB/kWh</td><td>4.00 THB/unit</td><td><span class="badge badge-tie">ฐานราคาไฟต่างกัน 12.5%</span></td></tr>
+        <tr><td>📋 รายละเอียดคำนวณ<br><span style="font-size:.75rem;color:var(--muted)">(ความโปร่งใส — เปิดเผยสูตรคำนวณให้ตรวจสอบได้หรือไม่)</span></td><td>เฉพาะ Electrical</td><td>ครบทุกหมวด</td><td><span class="badge badge-win">ทองสถิตย์ โปร่งใสกว่า</span></td></tr>
+        <tr><td>📐 Capacity ที่ใช้คำนวณ<br><span style="font-size:.75rem;color:var(--muted)">(ปริมาณน้ำเสียต่อวัน — ฐานที่ใช้หารค่าใช้จ่ายเพื่อหาต้นทุนต่อ m³)</span></td><td>504 m³/d</td><td>500 m³/d</td><td><span class="badge badge-tie">ต่างเล็กน้อย 0.8%</span></td></tr>
+        <tr><td>💸 ค่าใช้จ่ายต่อปี<br><span style="font-size:.75rem;color:var(--muted)">(งบประมาณรายปีรวม — ต้นทุนจริงที่ต้องจ่ายทั้งปี)</span></td><td>~12.5M THB</td><td>~1.6M THB</td><td><span class="badge badge-win">ประหยัด ~10.9M THB/yr</span></td></tr>
+        <tr><td>🏗️ ระบบ MBBR-AS<br><span style="font-size:.75rem;color:var(--muted)">(Moving Bed Biofilm Reactor + Activated Sludge — ระบบบำบัดทางชีวภาพ ใช้ตัวกลางลอยให้จุลินทรีย์เกาะ)</span></td><td>✅ ระบุใน OPEX Sheet</td><td>❓ ไม่ระบุในเอกสารนี้</td><td><span class="badge badge-tie">ต้องสอบถามเพิ่ม</span></td></tr>
+        <tr><td>🔧 Screw Press<br><span style="font-size:.75rem;color:var(--muted)">(เครื่องรีดตะกอน — บีบน้ำออกจากตะกอนให้แห้งเพื่อลดปริมาตรก่อนนำไปกำจัด)</span></td><td>✅ มี (Opt.1 เท่านั้น)</td><td>❓ ไม่ระบุ</td><td><span class="badge badge-tie">อาจรวมอยู่ในค่าตะกอน</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ========== VERDICT ========== -->
+<div class="verdict">
+  <h2>🏆 สรุปและคำแนะนำ</h2>
+  <p><strong>ทองสถิตย์มี Operating Cost ต่ำกว่า Perfect อย่างมาก</strong> (8.89 vs 67.91–68.66 THB/m³)<br>
+  แต่ส่วนต่างหลัก 96% มาจาก <strong>ค่ากำจัดตะกอน</strong> ที่สมมติฐานอาจต่างกัน</p>
+  <div class="pros-cons">
+    <div class="pros"><h3 style="color:var(--green)">✅ ข้อดีทองสถิตย์</h3><ul>
+      <li>OPEX รวมถูกกว่า 87% (~10.9M THB/ปี)</li>
+      <li>มีรายละเอียดการคำนวณครบทุกหมวด</li>
+      <li>ค่าสารเคมีถูกกว่า 21%</li>
+      <li>ค่าไฟฟ้าถูกกว่า 14-24%</li>
+      <li>มีสูตรตรวจสอบย้อนกลับได้</li>
+    </ul></div>
+    <div class="cons"><h3 style="color:var(--red)">⚠️ ข้อควรพิจารณาก่อนตัดสินใจ</h3><ul>
+      <li>ค่า Sludge ต่างกันมาก 221x — <strong>ควรตรวจสอบ Scope</strong></li>
+      <li>Perfect ระบุระบบ MBBR-AS ชัดเจน</li>
+      <li>Perfect มี Screw Press สำหรับรีดตะกอน</li>
+      <li>ฐานค่าไฟต่างกัน (4.50 vs 4.00 THB/unit)</li>
+      <li><strong>ต้องเทียบ Scope of Work ให้ตรงกัน</strong></li>
+    </ul></div>
+  </div>
+  <div class="explain ok" style="margin-top:16px">
+    <strong>👉 สิ่งที่ควรขอจากทั้งสองบริษัท:</strong><br>
+    1. <strong>Sludge Mass Balance</strong> — ปริมาณตะกอนที่เกิดขึ้นจริง (kg/day)<br>
+    2. <strong>Unit cost ค่ากำจัด</strong> — THB/ton ของค่ากำจัดและค่าขนส่ง<br>
+    3. <strong>ฐานค่าไฟฟ้า</strong> — ใช้ TOU rate ของ PEA หรือ MEA อัตราไหน<br>
+    4. <strong>Scope of Supply</strong> — รายการอุปกรณ์ที่รวมอยู่ในใบเสนอราคา
+  </div>
+</div>
+
+<!-- ========== MISSING DATA FOR APPLE-TO-APPLE ========== -->
+<div class="grid" style="margin-top:24px">
+  <div class="card full" style="border:3px solid #ff6b6b;background:linear-gradient(135deg,#fff5f5,#ffe3e3);padding:28px">
+    <h2 style="color:#c0392b;font-size:1.3rem;text-align:center;margin-bottom:20px">🔍 ข้อมูลที่ขาด — เพื่อเปรียบเทียบ Apple-to-Apple</h2>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+      <!-- Perfect ขาด -->
+      <div style="background:#fff;border:2px solid #a29bfe;border-radius:14px;padding:20px">
+        <h3 style="color:#6c5ce7;margin-bottom:12px;font-size:1.05rem">🟣 Perfect ขาด:</h3>
+        <table style="width:100%;font-size:.82rem;border:1px solid #dde1e8">
+          <thead><tr><th style="background:#f0eeff;width:30px">#</th><th style="background:#f0eeff">รายการที่ขาด</th><th style="background:#f0eeff">ทำไมต้องมี</th></tr></thead>
+          <tbody>
+            <tr><td class="text-c">1</td><td><strong>รายละเอียดสารเคมี</strong><br><span style="color:var(--muted);font-size:.75rem">ชนิด, dosage, ราคา/kg</span></td><td>มีแค่ตัวเลขรวม 5.36 THB/m³ ตรวจสอบไม่ได้</td></tr>
+            <tr><td class="text-c">2</td><td><strong>รายละเอียดค่ากำจัดตะกอน</strong><br><span style="color:var(--muted);font-size:.75rem">ปริมาณ kg/d, ค่ากำจัด/ตัน, ค่าขนส่ง</span></td><td>มีแค่ตัวเลขรวม 57.54 THB/m³ ซึ่งสูงมาก ไม่รู้ว่าคิดจากอะไร</td></tr>
+            <tr><td class="text-c">3</td><td><strong>Sludge Mass Balance</strong></td><td>ไม่รู้ว่าตะกอนเกิดขึ้นเท่าไหร่ต่อวัน</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ทองสถิตย์ ขาด -->
+      <div style="background:#fff;border:2px solid #6dd5b8;border-radius:14px;padding:20px">
+        <h3 style="color:#00956f;margin-bottom:12px;font-size:1.05rem">🟢 ทองสถิตย์ ขาด:</h3>
+        <table style="width:100%;font-size:.82rem;border:1px solid #dde1e8">
+          <thead><tr><th style="background:#e4f9f3;width:30px">#</th><th style="background:#e4f9f3">รายการที่ขาด</th><th style="background:#e4f9f3">ทำไมต้องมี</th></tr></thead>
+          <tbody>
+            <tr><td class="text-c">1</td><td><strong>รายละเอียดอุปกรณ์ไฟฟ้า</strong><br><span style="color:var(--muted);font-size:.75rem">ชนิด, kW ของแต่ละตัว</span></td><td>มีแค่รวม 550 units/day ตรวจสอบไม่ได้</td></tr>
+            <tr><td class="text-c">2</td><td><strong>ระบบบำบัดที่ใช้</strong><br><span style="color:var(--muted);font-size:.75rem">MBBR-AS หรือระบบอื่น</span></td><td>ไม่รู้ว่าใช้ระบบเดียวกันกับ Perfect หรือไม่</td></tr>
+            <tr><td class="text-c">3</td><td><strong>สมมติฐานตะกอน "12%"</strong><br><span style="color:var(--muted);font-size:.75rem">500×12%×ค่ากำจัด</span></td><td>12% ของอะไร? ไม่ชัดเจน</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ทั้งสองเจ้าขาด -->
+    <div style="background:#fff3cd;border:2px solid #f0d080;border-radius:14px;padding:20px;margin-top:20px">
+      <h3 style="color:#b37400;margin-bottom:12px;font-size:1.05rem;text-align:center">⚠️ ทั้งสองเจ้าขาด — ต้องตกลงให้ตรงกันก่อนเทียบ</h3>
+      <table style="width:100%;font-size:.82rem;border:1px solid #dde1e8">
+        <thead><tr><th style="background:#fff8e6;width:30px">#</th><th style="background:#fff8e6">รายการ</th><th style="background:#fff8e6">สิ่งที่ต้องตกลงให้ตรงกัน</th></tr></thead>
+        <tbody>
+          <tr><td class="text-c">1</td><td><strong>คุณภาพน้ำเสียขาเข้า (Influent)</strong></td><td>BOD, COD, SS, Color, pH</td></tr>
+          <tr><td class="text-c">2</td><td><strong>คุณภาพน้ำทิ้งรับประกัน (Effluent guarantee)</strong></td><td>ค่ามาตรฐานที่รับประกันว่าผ่าน</td></tr>
+          <tr><td class="text-c">3</td><td><strong>ฐานค่าไฟเดียวกัน</strong></td><td>Perfect ใช้ 4.50 / ทองสถิตย์ใช้ 4.00 THB/unit</td></tr>
+          <tr><td class="text-c">4</td><td><strong>Capacity เดียวกัน</strong></td><td>Perfect 504 m³/d / ทองสถิตย์ 500 m³/d</td></tr>
+          <tr><td class="text-c">5</td><td><strong>ค่าบำรุงรักษา (Maintenance)</strong></td><td>ทั้งสองไม่ได้รวมค่า maintenance</td></tr>
+          <tr><td class="text-c">6</td><td><strong>ค่าแรงงาน (Manpower)</strong></td><td>ทั้งสองไม่ได้รวมค่าคนเดินระบบ</td></tr>
+          <tr><td class="text-c">7</td><td><strong>Sludge Mass Balance</strong></td><td>ปริมาณตะกอนจริงที่ใช้คำนวณ (kg/day)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<p style="text-align:center;color:var(--muted);margin-top:24px;font-size:.75rem">Tee Jakkrit : 12 Mar 2026 | Data verified ✓ | Perfect OPEX Sheet (07/05/2025) & เอกสารตอบคำถามทองสถิตย์ (26/02/23)</p>
+</div>
+
+<script>
+// Disable auto-registration so datalabels only apply where we want
+Chart.defaults.set('plugins.datalabels', {display: false});
+
+const C=Chart, co={p1:'rgba(108,92,231,0.75)',p2:'rgba(9,132,227,0.75)',t:'rgba(0,149,111,0.75)',red:'rgba(214,48,49,0.75)',yel:'rgba(214,137,16,0.75)'};
+const opts=(extra={})=>({responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#333',font:{family:'Inter',size:11}}},datalabels:{display:false}},scales:{x:{ticks:{color:'#555',font:{family:'Inter'}},grid:{color:'rgba(0,0,0,0.06)'}},y:{ticks:{color:'#555'},grid:{color:'rgba(0,0,0,0.06)'}}},...extra});
+
+// ========== Bar Chart per m³ — WITH DATA LABELS ==========
+new C(document.getElementById('barChart'),{type:'bar',
+  plugins:[ChartDataLabels],
+  data:{labels:['ค่าไฟฟ้า','ค่าสารเคมี','ค่ากำจัดตะกอน','รวม OPEX'],datasets:[
+    {label:'Perfect Opt.1',data:[5.76,5.36,57.54,68.66],backgroundColor:co.p1,borderRadius:6},
+    {label:'Perfect Opt.2',data:[5.01,5.36,57.54,67.91],backgroundColor:co.p2,borderRadius:6},
+    {label:'ทองสถิตย์',data:[4.40,4.23,0.26,8.89],backgroundColor:co.t,borderRadius:6}
+  ]},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{
+      legend:{labels:{color:'#333',font:{family:'Inter',size:11}}},
+      datalabels:{
+        display:true,
+        color:'#333',
+        font:{family:'Inter',size:9,weight:'bold'},
+        anchor:'end',
+        align:'top',
+        offset:2,
+        textAlign:'center',
+        formatter:function(v,ctx){return ctx.dataset.label+'\n'+v.toFixed(2);}
+      }
+    },
+    scales:{
+      x:{ticks:{color:'#555',font:{family:'Inter'}},grid:{color:'rgba(0,0,0,0.06)'}},
+      y:{ticks:{color:'#555',callback:v=>v+' ฿/m³'},grid:{color:'rgba(0,0,0,0.06)'},suggestedMax:85}
+    }
+  }
+});
+
+// ========== Daily Cost ==========
+new C(document.getElementById('dailyChart'),{type:'bar',plugins:[ChartDataLabels],data:{labels:['ค่าไฟฟ้า','ค่าสารเคมี','ค่ากำจัดตะกอน','รวม'],datasets:[
+{label:'Perfect Opt.1',data:[2904,2701,29000,34605],backgroundColor:co.p1,borderRadius:6},
+{label:'Perfect Opt.2',data:[2525,2701,29000,34226],backgroundColor:co.p2,borderRadius:6},
+{label:'ทองสถิตย์',data:[2200,2113,132,4445],backgroundColor:co.t,borderRadius:6}
+]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{labels:{color:'#333',font:{family:'Inter',size:12}}},datalabels:{display:true,color:'#333',font:{family:'Inter',size:9,weight:'bold'},anchor:'end',align:'right',offset:4,textAlign:'left',formatter:function(v,ctx){var name=ctx.dataset.label;return name+': '+(v>=1000?(v/1000).toFixed(1)+'K':v)+' ฿';}}},scales:{x:{ticks:{color:'#555',font:{family:'Inter'},callback:v=>v>=1000?(v/1000).toFixed(1)+'K ฿':v+' ฿'},grid:{color:'rgba(0,0,0,0.06)'}},y:{ticks:{color:'#555',font:{family:'Inter',size:12}},grid:{display:false}}}}});
+
+// ========== 3 Separate Pie Charts ==========
+const pieOpts=(title)=>({responsive:true,maintainAspectRatio:false,cutout:'40%',plugins:{legend:{display:false},datalabels:{display:true,color:'#333',font:{family:'Inter',size:11,weight:'bold'},formatter:(v,ctx)=>{let sum=ctx.dataset.data.reduce((a,b)=>a+b,0);let pct=(v/sum*100).toFixed(1);let labels=['⚡ไฟฟ้า','🧪เคมี','🗑️ตะกอน'];return labels[ctx.dataIndex]+'\n'+v+' THB/m³\n('+pct+'%)';},textAlign:'center'}}});
+const pieCols=[co.p1,co.yel,co.red];
+new C(document.getElementById('pieP1'),{type:'doughnut',plugins:[ChartDataLabels],data:{labels:['ค่าไฟฟ้า','ค่าสารเคมี','ค่ากำจัดตะกอน'],datasets:[{data:[5.76,5.36,57.54],backgroundColor:pieCols,borderWidth:2,borderColor:'#fff'}]},options:pieOpts('Perfect Opt.1')});
+new C(document.getElementById('pieP2'),{type:'doughnut',plugins:[ChartDataLabels],data:{labels:['ค่าไฟฟ้า','ค่าสารเคมี','ค่ากำจัดตะกอน'],datasets:[{data:[5.01,5.36,57.54],backgroundColor:pieCols,borderWidth:2,borderColor:'#fff'}]},options:pieOpts('Perfect Opt.2')});
+new C(document.getElementById('pieTS'),{type:'doughnut',plugins:[ChartDataLabels],data:{labels:['ค่าไฟฟ้า','ค่าสารเคมี','ค่ากำจัดตะกอน'],datasets:[{data:[4.40,4.23,0.26],backgroundColor:['rgba(0,149,111,0.75)','rgba(214,137,16,0.75)','rgba(214,48,49,0.75)'],borderWidth:2,borderColor:'#fff'}]},options:pieOpts('ทองสถิตย์')});;
+
+// ========== Electrical comparison ==========
+new C(document.getElementById('elecChart'),{type:'bar',plugins:[ChartDataLabels],data:{labels:['Air Blower','Submersible\nPump','Centrifugal\nPump','Sludge\nPump','Chem Dosing\n/Scrapper','Instrument\n& Control','Screw\nPress'],datasets:[
+{label:'Perfect Opt.1',data:[512460,157680,86724,86724,14585,78840,123188],backgroundColor:co.p1,borderRadius:4},
+{label:'Perfect Opt.2',data:[512460,157680,86724,86724,39420,39420,0],backgroundColor:co.p2,borderRadius:4}
+]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#333',font:{family:'Inter',size:11}}},datalabels:{display:function(ctx){return ctx.dataset.data[ctx.dataIndex]>0;},color:'#333',font:{family:'Inter',size:8,weight:'bold'},anchor:'end',align:'top',offset:1,formatter:v=>(v/1000).toFixed(0)+'K'}},scales:{x:{ticks:{color:'#555',font:{family:'Inter',size:9}},grid:{display:false}},y:{ticks:{color:'#555',callback:v=>v>=1000?(v/1000).toFixed(0)+'K':v},grid:{color:'rgba(0,0,0,0.06)'}}}}});
+
+// ========== Sludge comparison ==========
+new C(document.getElementById('sludgeChart'),{type:'bar',plugins:[ChartDataLabels],data:{labels:['Perfect Opt.1 & 2','ทองสถิตย์'],datasets:[
+{label:'ค่ากำจัดตะกอน',data:[57.54*504,72],backgroundColor:co.red,borderRadius:6},
+{label:'ค่าขนส่งตะกอน',data:[0,60],backgroundColor:co.yel,borderRadius:6}
+]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#333',font:{family:'Inter',size:11}}},datalabels:{display:function(ctx){return ctx.dataset.data[ctx.dataIndex]>0;},color:'#333',font:{family:'Inter',size:10,weight:'bold'},formatter:v=>v>=1000?(v/1000).toFixed(1)+'K ฿/day':v+' ฿/day'}},scales:{x:{stacked:true,ticks:{color:'#555'},grid:{display:false}},y:{stacked:true,ticks:{color:'#555',callback:v=>v>=1000?(v/1000).toFixed(1)+'K ฿/day':v+' ฿/day'},grid:{color:'rgba(0,0,0,0.06)'}}}}});
+
+// ========== Yearly stacked ==========
+const pYr=183960, tYr=182500;
+new C(document.getElementById('yearlyChart'),{type:'bar',plugins:[ChartDataLabels],data:{labels:['Perfect Opt.1','Perfect Opt.2','ทองสถิตย์'],datasets:[
+{label:'ค่าไฟฟ้า',data:[1060201,922428,2200*365],backgroundColor:co.p1,borderRadius:4},
+{label:'ค่าสารเคมี',data:[5.36*pYr,5.36*pYr,2113*365],backgroundColor:co.yel,borderRadius:4},
+{label:'ค่ากำจัดตะกอน',data:[57.54*pYr,57.54*pYr,132*365],backgroundColor:co.red,borderRadius:4}
+]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#333',font:{family:'Inter'}}},tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+(ctx.raw/1e6).toFixed(2)+' M THB'}},datalabels:{display:function(ctx){return ctx.dataset.data[ctx.dataIndex]>100000;},color:'#333',font:{family:'Inter',size:9,weight:'bold'},formatter:v=>(v/1e6).toFixed(1)+'M'}},scales:{x:{stacked:true,ticks:{color:'#555',font:{family:'Inter'}},grid:{display:false}},y:{stacked:true,ticks:{color:'#555',callback:v=>(v/1e6).toFixed(0)+' M ฿'},grid:{color:'rgba(0,0,0,0.06)'}}}}});
+</script>
+</body>
+</html>
