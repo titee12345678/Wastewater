@@ -341,13 +341,7 @@ tr:hover td{background:rgba(108,92,231,.06)}
   </div>
 </div>
 
-<!-- ========== SLUDGE COMPARISON CHART ========== -->
-<div class="grid">
-  <div class="card full sec-sludge">
-    <h2 style="color:#ff6b6b">🗑️ กราฟเปรียบเทียบค่ากำจัดตะกอน (THB/day)</h2>
-    <div class="chart-wrap"><canvas id="sludgeChart"></canvas></div>
-  </div>
-</div>
+
 
 <!-- ========== YEARLY CHART ========== -->
 <div class="grid">
@@ -581,11 +575,7 @@ new C(document.getElementById('elecChart'),{type:'bar',plugins:[ChartDataLabels]
 {label:'Perfect Opt.2',data:[512460,157680,86724,86724,39420,39420,0],backgroundColor:co.p2,borderRadius:4}
 ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#333',font:{family:'Inter',size:11}}},datalabels:{display:function(ctx){return ctx.dataset.data[ctx.dataIndex]>0;},color:'#333',font:{family:'Inter',size:8,weight:'bold'},anchor:'end',align:'top',offset:1,formatter:v=>(v/1000).toFixed(0)+'K'}},scales:{x:{ticks:{color:'#555',font:{family:'Inter',size:9}},grid:{display:false}},y:{ticks:{color:'#555',callback:v=>v>=1000?(v/1000).toFixed(0)+'K':v},grid:{color:'rgba(0,0,0,0.06)'}}}}});
 
-// ========== Sludge comparison ==========
-new C(document.getElementById('sludgeChart'),{type:'bar',plugins:[ChartDataLabels],data:{labels:['Perfect Opt.1 & 2','ทองสถิตย์'],datasets:[
-{label:'ค่ากำจัดตะกอน',data:[57.54*504,72],backgroundColor:co.red,borderRadius:6},
-{label:'ค่าขนส่งตะกอน',data:[0,60],backgroundColor:co.yel,borderRadius:6}
-]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#333',font:{family:'Inter',size:11}}},datalabels:{display:function(ctx){return ctx.dataset.data[ctx.dataIndex]>0;},color:'#333',font:{family:'Inter',size:10,weight:'bold'},formatter:v=>v>=1000?(v/1000).toFixed(1)+'K ฿/day':v+' ฿/day'}},scales:{x:{stacked:true,ticks:{color:'#555'},grid:{display:false}},y:{stacked:true,ticks:{color:'#555',callback:v=>v>=1000?(v/1000).toFixed(1)+'K ฿/day':v+' ฿/day'},grid:{color:'rgba(0,0,0,0.06)'}}}}});
+
 
 // ========== Yearly stacked ==========
 const pYr=183960, tYr=182500;
