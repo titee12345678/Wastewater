@@ -419,7 +419,42 @@ tr:hover td{background:rgba(108,92,231,.06)}
   </div>
 </div>
 
-<!-- ========== MISSING DATA FOR APPLE-TO-APPLE ========== -->
+<!-- ========== CUSTOM CALCULATOR ========== -->
+<div class="grid" style="margin-top:24px">
+  <div class="card full" style="border:3px solid #6c5ce7;background:linear-gradient(135deg,#f5f3ff,#ede9ff);padding:28px">
+    <h2 style="color:#6c5ce7;font-size:1.3rem;text-align:center;margin-bottom:20px">🧮 คำนวณค่าใช้จ่ายเอง — กรอกปริมาณน้ำเสียที่ต้องการ</h2>
+    
+    <div style="display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;margin-bottom:24px">
+      <label style="font-weight:700;font-size:1rem;color:var(--text)">ปริมาณน้ำเสีย:</label>
+      <input type="number" id="customVolume" value="504" min="1" max="10000" step="1" 
+        style="width:140px;padding:12px 16px;font-size:1.3rem;font-weight:800;text-align:center;border:3px solid #6c5ce7;border-radius:12px;background:#fff;color:#6c5ce7;outline:none;font-family:Inter">
+      <span style="font-weight:600;font-size:1rem;color:var(--muted)">m³/วัน</span>
+      <button onclick="calcCustom()" style="padding:10px 24px;background:var(--gradient);color:#fff;border:none;border-radius:10px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:Inter">คำนวณ</button>
+    </div>
+
+    <div class="table-scroll">
+      <table id="calcTable" style="min-width:700px">
+        <thead>
+          <tr>
+            <th>หมวดค่าใช้จ่าย</th>
+            <th class="text-c" style="background:#f0eeff;color:#6c5ce7">Perfect Opt.1<br><span style="font-size:.7rem;font-weight:400">THB/m³ → บาท/วัน</span></th>
+            <th class="text-c" style="background:#e3f1ff;color:#0984e3">Perfect Opt.2<br><span style="font-size:.7rem;font-weight:400">THB/m³ → บาท/วัน</span></th>
+            <th class="text-c" style="background:#e4f9f3;color:#00956f">ทองสถิตย์<br><span style="font-size:.7rem;font-weight:400">THB/m³ → บาท/วัน</span></th>
+          </tr>
+        </thead>
+        <tbody id="calcBody"></tbody>
+      </table>
+    </div>
+
+    <div id="calcSummary" style="margin-top:16px"></div>
+
+    <div class="explain info" style="margin-top:12px">
+      <strong>💡 วิธีใช้:</strong> กรอกปริมาณน้ำเสียที่ต้องการ (m³/วัน) แล้วกด "คำนวณ" — ระบบจะคำนวณค่าใช้จ่ายรายวัน, รายเดือน, รายปี ของทั้ง 3 เจ้าให้อัตโนมัติ<br>
+      <strong>⚠️ หมายเหตุ:</strong> ตัวเลข THB/m³ คงที่ตามเอกสารต้นฉบับ — ค่าจริงอาจเปลี่ยนตาม scale ของระบบ
+    </div>
+  </div>
+</div>
+
 <div class="grid" style="margin-top:24px">
   <div class="card full" style="border:3px solid #ff6b6b;background:linear-gradient(135deg,#fff5f5,#ffe3e3);padding:28px">
     <h2 style="color:#c0392b;font-size:1.3rem;text-align:center;margin-bottom:20px">🔍 ข้อมูลที่ขาด — เพื่อเปรียบเทียบ Apple-to-Apple</h2>
@@ -557,6 +592,56 @@ new C(document.getElementById('yearlyChart'),{type:'bar',plugins:[ChartDataLabel
 {label:'ค่าสารเคมี',data:[5.36*pYr,5.36*pYr,2113*365],backgroundColor:co.yel,borderRadius:4},
 {label:'ค่ากำจัดตะกอน',data:[57.54*pYr,57.54*pYr,132*365],backgroundColor:co.red,borderRadius:4}
 ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#333',font:{family:'Inter'}}},tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+(ctx.raw/1e6).toFixed(2)+' M THB'}},datalabels:{display:function(ctx){return ctx.dataset.data[ctx.dataIndex]>100000;},color:'#333',font:{family:'Inter',size:9,weight:'bold'},formatter:v=>(v/1e6).toFixed(1)+'M'}},scales:{x:{stacked:true,ticks:{color:'#555',font:{family:'Inter'}},grid:{display:false}},y:{stacked:true,ticks:{color:'#555',callback:v=>(v/1e6).toFixed(0)+' M ฿'},grid:{color:'rgba(0,0,0,0.06)'}}}}});
+// ========== Custom Calculator ==========
+function calcCustom(){
+  var vol=parseFloat(document.getElementById('customVolume').value)||504;
+  // Unit rates (THB/m³) from original documents
+  var rates={
+    p1:{elec:5.76,chem:5.36,sludge:57.54},
+    p2:{elec:5.01,chem:5.36,sludge:57.54},
+    ts:{elec:4.40,chem:4.23,sludge:0.26}
+  };
+  var fmt=function(n){return n.toLocaleString('th-TH',{maximumFractionDigits:0});};
+  var items=[
+    {name:'⚡ ค่าไฟฟ้า',key:'elec'},
+    {name:'🧪 ค่าสารเคมี',key:'chem'},
+    {name:'🗑️ ค่ากำจัดตะกอน',key:'sludge'}
+  ];
+  var html='';
+  var totP1=0,totP2=0,totTS=0;
+  items.forEach(function(item){
+    var p1d=rates.p1[item.key]*vol, p2d=rates.p2[item.key]*vol, tsd=rates.ts[item.key]*vol;
+    totP1+=p1d; totP2+=p2d; totTS+=tsd;
+    html+='<tr><td>'+item.name+'</td>';
+    html+='<td class="text-c">'+rates.p1[item.key]+' → <strong>'+fmt(p1d)+'</strong></td>';
+    html+='<td class="text-c">'+rates.p2[item.key]+' → <strong>'+fmt(p2d)+'</strong></td>';
+    html+='<td class="text-c">'+rates.ts[item.key]+' → <strong>'+fmt(tsd)+'</strong></td></tr>';
+  });
+  html+='<tr style="font-weight:800;border-top:3px solid #6c5ce7;background:rgba(108,92,231,.06)">';
+  html+='<td>💰 <strong>รวม OPEX/วัน</strong></td>';
+  html+='<td class="text-c" style="color:#6c5ce7;font-size:1rem">'+fmt(totP1)+' ฿</td>';
+  html+='<td class="text-c" style="color:#0984e3;font-size:1rem">'+fmt(totP2)+' ฿</td>';
+  html+='<td class="text-c" style="color:#00956f;font-size:1rem">'+fmt(totTS)+' ฿</td></tr>';
+  document.getElementById('calcBody').innerHTML=html;
+  // Summary cards
+  var diffDay=totP1-totTS;
+  var s='<div class="score-cards" style="margin-top:12px">';
+  s+='<div class="sc"><div class="label">ปริมาณน้ำเสีย</div><div class="val" style="color:var(--accent)">'+fmt(vol)+'</div><div class="unit">m³/วัน</div></div>';
+  s+='<div class="sc"><div class="label">ค่าใช้จ่าย/เดือน (Opt.1)</div><div class="val" style="color:var(--accent2);font-size:1.4rem">'+fmt(totP1*30)+'</div><div class="unit">บาท/เดือน</div></div>';
+  s+='<div class="sc"><div class="label">ค่าใช้จ่าย/เดือน (ทองสถิตย์)</div><div class="val" style="color:var(--green);font-size:1.4rem">'+fmt(totTS*30)+'</div><div class="unit">บาท/เดือน</div></div>';
+  s+='<div class="sc highlight"><div class="label">ประหยัด/ปี (ทองสถิตย์ vs Opt.1)</div><div class="val" style="color:var(--green);font-size:1.4rem">'+fmt(diffDay*365)+'</div><div class="unit">บาท/ปี</div></div>';
+  s+='</div>';
+  s+='<table style="margin-top:12px"><thead><tr><th></th><th class="text-c">Perfect Opt.1</th><th class="text-c">Perfect Opt.2</th><th class="text-c">ทองสถิตย์</th></tr></thead><tbody>';
+  s+='<tr><td>📅 ต่อวัน</td><td class="text-r" style="color:#6c5ce7">'+fmt(totP1)+' ฿</td><td class="text-r" style="color:#0984e3">'+fmt(totP2)+' ฿</td><td class="text-r" style="color:#00956f">'+fmt(totTS)+' ฿</td></tr>';
+  s+='<tr><td>📅 ต่อเดือน (×30)</td><td class="text-r" style="color:#6c5ce7">'+fmt(totP1*30)+' ฿</td><td class="text-r" style="color:#0984e3">'+fmt(totP2*30)+' ฿</td><td class="text-r" style="color:#00956f">'+fmt(totTS*30)+' ฿</td></tr>';
+  s+='<tr style="font-weight:700"><td>📅 ต่อปี (×365)</td><td class="text-r" style="color:#6c5ce7">'+fmt(totP1*365)+' ฿</td><td class="text-r" style="color:#0984e3">'+fmt(totP2*365)+' ฿</td><td class="text-r" style="color:#00956f">'+fmt(totTS*365)+' ฿</td></tr>';
+  s+='</tbody></table>';
+  document.getElementById('calcSummary').innerHTML=s;
+}
+// Auto-calculate on load
+calcCustom();
+// Also trigger on Enter key
+document.getElementById('customVolume').addEventListener('keyup',function(e){if(e.key==='Enter')calcCustom();});
 </script>
 </body>
 </html>
