@@ -69,6 +69,7 @@ tr:hover td{background:rgba(108,92,231,.06)}
 .table-scroll table{min-width:700px}
 .pie-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;margin-top:12px}
 .missing-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.missing-card{overflow:hidden}
 
 /* Tablet ≤1024px */
 @media(max-width:1024px){
@@ -130,6 +131,10 @@ tr:hover td{background:rgba(108,92,231,.06)}
   .verdict>p{font-size:.78rem}
   .pros-cons h3{font-size:.78rem}
   .pros-cons ul{font-size:.72rem;padding-left:14px}
+  .missing-card{padding:10px!important;overflow:hidden}
+  .missing-card table{min-width:auto!important}
+  .missing-card .table-scroll table{min-width:400px}
+  .card.full[style*="padding:28px"]{padding:10px!important}
 }
 
 /* iPhone SE / mini ≤375px */
@@ -140,6 +145,8 @@ tr:hover td{background:rgba(108,92,231,.06)}
   .card h2{font-size:.88rem}
   .chart-wrap{height:220px}
   .chart-wrap[style*="height"]{height:220px!important}
+  .missing-card{padding:8px!important}
+  .missing-card .table-scroll table{min-width:350px}
 }
 </style>
 </head>
@@ -419,7 +426,7 @@ tr:hover td{background:rgba(108,92,231,.06)}
 
     <div class="missing-grid">
       <!-- Perfect ขาด -->
-      <div style="background:#fff;border:2px solid #a29bfe;border-radius:14px;padding:20px">
+      <div class="missing-card" style="background:#fff;border:2px solid #a29bfe;border-radius:14px;padding:20px">
         <h3 style="color:#6c5ce7;margin-bottom:12px;font-size:1.05rem">🟣 Perfect ขาด:</h3>
         <div class="table-scroll"><table style="width:100%;font-size:.82rem;border:1px solid #dde1e8">
           <thead><tr><th style="background:#f0eeff;width:30px">#</th><th style="background:#f0eeff">รายการที่ขาด</th><th style="background:#f0eeff">ทำไมต้องมี</th></tr></thead>
@@ -428,11 +435,11 @@ tr:hover td{background:rgba(108,92,231,.06)}
             <tr><td class="text-c">2</td><td><strong>รายละเอียดค่ากำจัดตะกอน</strong><br><span style="color:var(--muted);font-size:.75rem">ปริมาณ kg/d, ค่ากำจัด/ตัน, ค่าขนส่ง</span></td><td>มีแค่ตัวเลขรวม 57.54 THB/m³ ซึ่งสูงมาก ไม่รู้ว่าคิดจากอะไร</td></tr>
             <tr><td class="text-c">3</td><td><strong>Sludge Mass Balance</strong></td><td>ไม่รู้ว่าตะกอนเกิดขึ้นเท่าไหร่ต่อวัน</td></tr>
           </tbody>
-        </table></div></div></div>
+        </table></div>
       </div>
 
       <!-- ทองสถิตย์ ขาด -->
-      <div style="background:#fff;border:2px solid #6dd5b8;border-radius:14px;padding:20px">
+      <div class="missing-card" style="background:#fff;border:2px solid #6dd5b8;border-radius:14px;padding:20px">
         <h3 style="color:#00956f;margin-bottom:12px;font-size:1.05rem">🟢 ทองสถิตย์ ขาด:</h3>
         <div class="table-scroll"><table style="width:100%;font-size:.82rem;border:1px solid #dde1e8">
           <thead><tr><th style="background:#e4f9f3;width:30px">#</th><th style="background:#e4f9f3">รายการที่ขาด</th><th style="background:#e4f9f3">ทำไมต้องมี</th></tr></thead>
@@ -441,12 +448,12 @@ tr:hover td{background:rgba(108,92,231,.06)}
             <tr><td class="text-c">2</td><td><strong>ระบบบำบัดที่ใช้</strong><br><span style="color:var(--muted);font-size:.75rem">MBBR-AS หรือระบบอื่น</span></td><td>ไม่ได้ระบุประเภทระบบบำบัดที่ใช้</td></tr>
             <tr><td class="text-c">3</td><td><strong>สมมติฐานตะกอน "12%"</strong><br><span style="color:var(--muted);font-size:.75rem">500×12%×ค่ากำจัด</span></td><td>12% ของอะไร? ไม่ชัดเจน</td></tr>
           </tbody>
-        </table></div></div></div>
+        </table></div>
       </div>
     </div>
 
     <!-- ทั้งสองเจ้าขาด -->
-    <div style="background:#fff3cd;border:2px solid #f0d080;border-radius:14px;padding:20px;margin-top:20px">
+    <div class="missing-card" style="background:#fff3cd;border:2px solid #f0d080;border-radius:14px;padding:20px;margin-top:20px">
       <h3 style="color:#b37400;margin-bottom:12px;font-size:1.05rem;text-align:center">⚠️ ทั้งสองเจ้าขาด — ต้องตกลงให้ตรงกันก่อนเทียบ</h3>
       <div class="table-scroll"><table style="width:100%;font-size:.82rem;border:1px solid #dde1e8">
         <thead><tr><th style="background:#fff8e6;width:30px">#</th><th style="background:#fff8e6">รายการ</th><th style="background:#fff8e6">สิ่งที่ต้องตกลงให้ตรงกัน</th></tr></thead>
