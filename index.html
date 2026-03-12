@@ -512,11 +512,24 @@ new C(document.getElementById('barChart'),{type:'bar',
 });
 
 // ========== Daily Cost ==========
-new C(document.getElementById('dailyChart'),{type:'bar',plugins:[ChartDataLabels],data:{labels:['ค่าไฟฟ้า','ค่าสารเคมี','ค่ากำจัดตะกอน','รวม'],datasets:[
+new C(document.getElementById('dailyChart'),{type:'bar',plugins:[ChartDataLabels],data:{labels:['⚡ ค่าไฟฟ้า','🧪 ค่าสารเคมี','🗑️ ค่ากำจัดตะกอน','💰 รวม'],datasets:[
 {label:'Perfect Opt.1',data:[2904,2701,29000,34605],backgroundColor:co.p1,borderRadius:6},
 {label:'Perfect Opt.2',data:[2525,2701,29000,34226],backgroundColor:co.p2,borderRadius:6},
 {label:'ทองสถิตย์',data:[2200,2113,132,4445],backgroundColor:co.t,borderRadius:6}
-]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{labels:{color:'#333',font:{family:'Inter',size:12}}},datalabels:{display:true,color:'#333',font:{family:'Inter',size:9,weight:'bold'},anchor:'end',align:'right',offset:4,textAlign:'left',formatter:function(v,ctx){var name=ctx.dataset.label;return name+': '+(v>=1000?(v/1000).toFixed(1)+'K':v)+' ฿';}}},scales:{x:{ticks:{color:'#555',font:{family:'Inter'},callback:v=>v>=1000?(v/1000).toFixed(1)+'K ฿':v+' ฿'},grid:{color:'rgba(0,0,0,0.06)'}},y:{ticks:{color:'#555',font:{family:'Inter',size:12}},grid:{display:false}}}}});
+]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+  plugins:{
+    legend:{labels:{color:'#333',font:{family:'Inter',size:12}}},
+    datalabels:{display:true,color:'#333',font:{family:'Inter',size:9,weight:'bold'},anchor:'end',align:'right',offset:4,textAlign:'left',
+      formatter:function(v,ctx){var name=ctx.dataset.label;return name+': '+(v>=1000?(v/1000).toFixed(1)+'K':v)+' ฿';}
+    }
+  },
+  scales:{
+    x:{ticks:{color:'#555',font:{family:'Inter'},callback:v=>v>=1000?(v/1000).toFixed(1)+'K ฿':v+' ฿'},grid:{color:'rgba(0,0,0,0.06)'}},
+    y:{ticks:{color:'#333',font:{family:'Inter',size:12,weight:'bold'},padding:8},
+      grid:{display:true,color:'rgba(0,0,0,0.15)',lineWidth:2,drawOnChartArea:true}
+    }
+  }
+}});
 
 // ========== 3 Separate Pie Charts ==========
 const pieOpts=(title)=>({responsive:true,maintainAspectRatio:false,cutout:'40%',plugins:{legend:{display:false},datalabels:{display:true,color:'#333',font:{family:'Inter',size:11,weight:'bold'},formatter:(v,ctx)=>{let sum=ctx.dataset.data.reduce((a,b)=>a+b,0);let pct=(v/sum*100).toFixed(1);let labels=['⚡ไฟฟ้า','🧪เคมี','🗑️ตะกอน'];return labels[ctx.dataIndex]+'\n'+v+' THB/m³\n('+pct+'%)';},textAlign:'center'}}});
