@@ -64,7 +64,53 @@ tr:hover td{background:rgba(108,92,231,.06)}
 .pros-cons ul{font-size:.8rem;color:var(--muted);padding-left:18px;line-height:1.8}
 .section-explain{margin-bottom:20px;padding:16px 20px;background:#f5f3ff;border:1px solid rgba(108,92,231,.2);border-radius:12px;font-size:.85rem;line-height:1.7;color:var(--muted)}
 .section-explain strong{color:var(--text)}
-@media(max-width:768px){.pros-cons{grid-template-columns:1fr}.chart-wrap{height:260px}}
+/* Tables responsive wrapper */
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.pie-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;margin-top:12px}
+.missing-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+
+/* Tablet */
+@media(max-width:1024px){
+  body{padding:16px}
+  .score-cards{grid-template-columns:repeat(2,1fr)}
+  .pie-grid{grid-template-columns:1fr 1fr;gap:16px}
+}
+
+/* Mobile */
+@media(max-width:768px){
+  body{padding:10px}
+  h1{font-size:1.4rem}
+  .subtitle{font-size:.8rem;margin-bottom:20px}
+  .grid{gap:14px}
+  .card{padding:16px;border-radius:12px}
+  .card h2{font-size:1.1rem;padding-bottom:8px}
+  .score-cards{grid-template-columns:1fr 1fr;gap:10px}
+  .sc{padding:14px}
+  .sc .val{font-size:1.5rem}
+  .chart-wrap{height:280px}
+  .pie-grid{grid-template-columns:1fr;gap:16px}
+  .missing-grid{grid-template-columns:1fr}
+  .pros-cons{grid-template-columns:1fr}
+  table{font-size:.78rem}
+  th,td{padding:8px 6px}
+  .explain{padding:10px 14px;font-size:.78rem}
+  .section-explain{padding:12px 14px;font-size:.8rem}
+  .verdict{padding:18px}
+  .verdict h2{font-size:1.1rem}
+}
+
+/* Small mobile */
+@media(max-width:480px){
+  body{padding:6px}
+  h1{font-size:1.2rem}
+  .score-cards{grid-template-columns:1fr}
+  .sc .val{font-size:1.3rem}
+  .card{padding:12px;border-radius:10px}
+  .card h2{font-size:1rem;flex-wrap:wrap}
+  .chart-wrap{height:240px}
+  table{font-size:.72rem}
+  th,td{padding:6px 4px;word-break:break-word}
+}
 </style>
 </head>
 <body>
@@ -120,7 +166,7 @@ tr:hover td{background:rgba(108,92,231,.06)}
   </div>
   <div class="card sec-pie" style="grid-column:1/-1">
     <h2>📈 สัดส่วนค่าใช้จ่าย (%) — แยกแต่ละเจ้า</h2>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;margin-top:12px">
+    <div class="pie-grid">
       <!-- Perfect Opt.1 -->
       <div style="text-align:center">
         <h3 style="color:var(--p1);margin-bottom:4px;font-size:1rem">🟣 Perfect Opt.1</h3>
@@ -341,7 +387,7 @@ tr:hover td{background:rgba(108,92,231,.06)}
   <div class="card full" style="border:3px solid #ff6b6b;background:linear-gradient(135deg,#fff5f5,#ffe3e3);padding:28px">
     <h2 style="color:#c0392b;font-size:1.3rem;text-align:center;margin-bottom:20px">🔍 ข้อมูลที่ขาด — เพื่อเปรียบเทียบ Apple-to-Apple</h2>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+    <div class="missing-grid">
       <!-- Perfect ขาด -->
       <div style="background:#fff;border:2px solid #a29bfe;border-radius:14px;padding:20px">
         <h3 style="color:#6c5ce7;margin-bottom:12px;font-size:1.05rem">🟣 Perfect ขาด:</h3>
