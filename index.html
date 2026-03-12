@@ -424,12 +424,21 @@ tr:hover td{background:rgba(108,92,231,.06)}
   <div class="card full" style="border:3px solid #6c5ce7;background:linear-gradient(135deg,#f5f3ff,#ede9ff);padding:28px">
     <h2 style="color:#6c5ce7;font-size:1.3rem;text-align:center;margin-bottom:20px">🧮 คำนวณค่าใช้จ่ายเอง — กรอกปริมาณน้ำเสียที่ต้องการ</h2>
     
-    <div style="display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;margin-bottom:24px">
+    <div style="display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;margin-bottom:16px">
       <label style="font-weight:700;font-size:1rem;color:var(--text)">ปริมาณน้ำเสีย:</label>
       <input type="number" id="customVolume" value="504" min="1" max="10000" step="1" 
-        style="width:140px;padding:12px 16px;font-size:1.3rem;font-weight:800;text-align:center;border:3px solid #6c5ce7;border-radius:12px;background:#fff;color:#6c5ce7;outline:none;font-family:Inter">
-      <span style="font-weight:600;font-size:1rem;color:var(--muted)">m³/วัน</span>
+        style="width:120px;padding:10px 14px;font-size:1.2rem;font-weight:800;text-align:center;border:3px solid #6c5ce7;border-radius:12px;background:#fff;color:#6c5ce7;outline:none;font-family:Inter">
+      <span style="font-weight:600;font-size:.9rem;color:var(--muted)">m³/วัน</span>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;margin-bottom:20px">
+      <label style="font-weight:700;font-size:1rem;color:var(--text)">⚡ ค่าไฟต่อหน่วย:</label>
+      <input type="number" id="customElecRate" value="4.00" min="0.1" max="20" step="0.01" 
+        style="width:120px;padding:10px 14px;font-size:1.2rem;font-weight:800;text-align:center;border:3px solid #e17055;border-radius:12px;background:#fff;color:#e17055;outline:none;font-family:Inter">
+      <span style="font-weight:600;font-size:.9rem;color:var(--muted)">บาท/kWh</span>
       <button onclick="calcCustom()" style="padding:10px 24px;background:var(--gradient);color:#fff;border:none;border-radius:10px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:Inter">คำนวณ</button>
+    </div>
+    <div style="text-align:center;margin-bottom:16px;font-size:.8rem;color:var(--muted)">
+      📝 ต้นฉบับ: Perfect ใช้ <strong>4.50</strong> บาท/kWh | ทองสถิตย์ใช้ <strong>4.00</strong> บาท/kWh
     </div>
 
     <div class="table-scroll">
@@ -595,11 +604,16 @@ new C(document.getElementById('yearlyChart'),{type:'bar',plugins:[ChartDataLabel
 // ========== Custom Calculator ==========
 function calcCustom(){
   var vol=parseFloat(document.getElementById('customVolume').value)||504;
-  // Unit rates (THB/m³) from original documents
+  var elecRate=parseFloat(document.getElementById('customElecRate').value)||4.00;
+  // kWh/m³ consumption derived from original data
+  // Perfect Opt.1: 5.76 THB/m³ ÷ 4.50 THB/kWh = 1.28 kWh/m³
+  // Perfect Opt.2: 5.01 THB/m³ ÷ 4.50 THB/kWh = 1.1133 kWh/m³
+  // ทองสถิตย์: 4.40 THB/m³ ÷ 4.00 THB/kWh = 1.10 kWh/m³
+  var kwh={p1:1.28, p2:1.1133, ts:1.10};
   var rates={
-    p1:{elec:5.76,chem:5.36,sludge:57.54},
-    p2:{elec:5.01,chem:5.36,sludge:57.54},
-    ts:{elec:4.40,chem:4.23,sludge:0.26}
+    p1:{elec:kwh.p1*elecRate, chem:5.36, sludge:57.54},
+    p2:{elec:kwh.p2*elecRate, chem:5.36, sludge:57.54},
+    ts:{elec:kwh.ts*elecRate, chem:4.23, sludge:0.26}
   };
   var fmt=function(n){return n.toLocaleString('th-TH',{maximumFractionDigits:0});};
   var items=[
@@ -642,6 +656,7 @@ function calcCustom(){
 calcCustom();
 // Also trigger on Enter key
 document.getElementById('customVolume').addEventListener('keyup',function(e){if(e.key==='Enter')calcCustom();});
+document.getElementById('customElecRate').addEventListener('keyup',function(e){if(e.key==='Enter')calcCustom();});
 </script>
 </body>
 </html>
