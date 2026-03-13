@@ -45,7 +45,7 @@ tr:hover td{background:rgba(108,92,231,.06)}
 .badge-lose{background:rgba(214,48,49,.12);color:#c0392b}
 .badge-tie{background:rgba(214,137,16,.12);color:#b37400}
 .badge-miss{background:rgba(85,91,110,.12);color:#555b6e}
-.chart-wrap{position:relative;height:320px}
+.chart-wrap{position:relative;height:320px;overflow:visible}
 .explain{background:#f5f6f8;border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:14px 18px;margin-top:16px;font-size:.82rem;line-height:1.7;color:var(--muted)}
 .explain strong{color:var(--text)}
 .explain .icon{margin-right:4px}
@@ -91,6 +91,7 @@ tr:hover td{background:rgba(108,92,231,.06)}
   .sc .val{font-size:1.4rem}
   .sc .label{font-size:.65rem}
   .chart-wrap{height:300px}
+  .chart-wrap.chart-daily{height:520px!important}
   .pie-grid{grid-template-columns:1fr;gap:16px}
   .missing-grid{grid-template-columns:1fr}
   .pros-cons{grid-template-columns:1fr}
@@ -117,7 +118,11 @@ tr:hover td{background:rgba(108,92,231,.06)}
   .sc .label{font-size:.6rem;letter-spacing:.5px}
   .sc .unit{font-size:.7rem}
   .chart-wrap{height:260px}
+  .chart-wrap.chart-daily{height:600px!important}
+  .chart-wrap.chart-barm3{height:300px!important}
   .chart-wrap[style*="height"]{height:260px!important}
+  .chart-wrap.chart-daily[style*="height"]{height:600px!important}
+  .chart-wrap.chart-barm3[style*="height"]{height:300px!important}
   table{font-size:.7rem}
   th{font-size:.65rem;padding:5px 4px;white-space:normal}
   td{padding:5px 4px}
@@ -144,7 +149,11 @@ tr:hover td{background:rgba(108,92,231,.06)}
   .sc .val{font-size:1.1rem}
   .card h2{font-size:.88rem}
   .chart-wrap{height:220px}
+  .chart-wrap.chart-daily{height:650px!important}
+  .chart-wrap.chart-barm3{height:280px!important}
   .chart-wrap[style*="height"]{height:220px!important}
+  .chart-wrap.chart-daily[style*="height"]{height:650px!important}
+  .chart-wrap.chart-barm3[style*="height"]{height:280px!important}
   .missing-card{padding:8px!important}
   .missing-card .table-scroll table{min-width:350px}
 }
@@ -189,7 +198,7 @@ tr:hover td{background:rgba(108,92,231,.06)}
 <div class="grid">
   <div class="card full">
     <h2 style="color:#74b9ff">📊 ค่าใช้จ่ายรายวัน (THB/day)</h2>
-    <div class="chart-wrap" style="height:480px"><canvas id="dailyChart"></canvas></div>
+    <div class="chart-wrap chart-daily" style="height:480px"><canvas id="dailyChart"></canvas></div>
     <div class="explain info">
       <strong>💡 อธิบาย:</strong> กราฟแสดงค่าใช้จ่ายต่อวัน — Perfect ตกวันละ ~34,600 บาท ขณะที่ทองสถิตย์เพียง ~4,445 บาท ห่างกัน ~30,000 บาท/วัน
     </div>
@@ -239,7 +248,7 @@ tr:hover td{background:rgba(108,92,231,.06)}
 <div class="grid">
   <div class="card full sec-chart">
     <h2 style="color:#74b9ff">📊 เปรียบเทียบค่าใช้จ่ายต่อ m³</h2>
-    <div class="chart-wrap"><canvas id="barChart"></canvas></div>
+    <div class="chart-wrap chart-barm3"><canvas id="barChart"></canvas></div>
     <div class="explain ok">
       <strong>✅ การตรวจสอบ:</strong> ตัวเลขตรงกับเอกสารต้นฉบับทุกรายการ — Perfect Opt.1 = 68.66 ✓, Opt.2 = 67.91 ✓, ทองสถิตย์ = 8.89 ✓
     </div>
@@ -504,6 +513,8 @@ tr:hover td{background:rgba(108,92,231,.06)}
 // Disable auto-registration so datalabels only apply where we want
 Chart.defaults.set('plugins.datalabels', {display: false});
 
+const isMobile = window.innerWidth <= 430;
+const isTablet = window.innerWidth <= 768;
 const C=Chart, co={p1:'rgba(108,92,231,0.75)',p2:'rgba(9,132,227,0.75)',t:'rgba(0,149,111,0.75)',red:'rgba(214,48,49,0.75)',yel:'rgba(214,137,16,0.75)'};
 const opts=(extra={})=>({responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#333',font:{family:'Inter',size:11}}},datalabels:{display:false}},scales:{x:{ticks:{color:'#555',font:{family:'Inter'}},grid:{color:'rgba(0,0,0,0.06)'}},y:{ticks:{color:'#555'},grid:{color:'rgba(0,0,0,0.06)'}}},...extra});
 
@@ -516,48 +527,67 @@ new C(document.getElementById('barChart'),{type:'bar',
     {label:'ทองสถิตย์',data:[4.40,4.23,0.26,8.89],backgroundColor:co.t,borderRadius:6}
   ]},
   options:{responsive:true,maintainAspectRatio:false,
+    layout:{padding:{top: isMobile ? 10 : 40, right: isMobile ? 5 : 20}},
     plugins:{
-      legend:{labels:{color:'#333',font:{family:'Inter',size:11}}},
+      legend:{labels:{color:'#333',font:{family:'Inter',size: isMobile ? 9 : 11}}},
       datalabels:{
-        display:true,
+        display: isMobile ? false : true,
         color:'#333',
-        font:{family:'Inter',size:9,weight:'bold'},
+        font:{family:'Inter',size: isTablet ? 8 : 9,weight:'bold'},
         anchor:'end',
         align:'top',
         offset:2,
         textAlign:'center',
-        formatter:function(v,ctx){return ctx.dataset.label+'\n'+v.toFixed(2)+' บาท/m³';}
+        formatter:function(v,ctx){
+          if(isTablet) return v.toFixed(1);
+          return ctx.dataset.label+'\n'+v.toFixed(2)+' บาท/m³';
+        }
+      },
+      tooltip:{
+        enabled:true,
+        callbacks:{
+          label:function(ctx){return ctx.dataset.label+': '+ctx.raw.toFixed(2)+' THB/m³';}
+        }
       }
     },
     scales:{
-      x:{ticks:{color:'#555',font:{family:'Inter'}},grid:{color:'rgba(0,0,0,0.06)'}},
-      y:{ticks:{color:'#555',callback:v=>v+' ฿/m³'},grid:{color:'rgba(0,0,0,0.06)'},suggestedMax:85}
+      x:{ticks:{color:'#555',font:{family:'Inter',size: isMobile ? 10 : 12},maxRotation: isMobile ? 45 : 0},grid:{color:'rgba(0,0,0,0.06)'}},
+      y:{ticks:{color:'#555',callback:v=>v+' ฿/m³',font:{size: isMobile ? 9 : 12}},grid:{color:'rgba(0,0,0,0.06)'},suggestedMax: isMobile ? 75 : 85}
     }
   }
 });
 
 // ========== Daily Cost ==========
 new C(document.getElementById('dailyChart'),{type:'bar',plugins:[ChartDataLabels],data:{labels:['⚡ ค่าไฟฟ้า','🧪 ค่าสารเคมี','🗑️ ค่ากำจัดตะกอน','💰 รวม'],datasets:[
-{label:'Perfect Opt.1',data:[2904,2701,29000,34605],backgroundColor:co.p1,borderRadius:6},
-{label:'Perfect Opt.2',data:[2525,2701,29000,34226],backgroundColor:co.p2,borderRadius:6},
-{label:'ทองสถิตย์',data:[2200,2113,132,4445],backgroundColor:co.t,borderRadius:6}
+{label:'Perfect Opt.1',data:[2904,2701,29000,34605],backgroundColor:co.p1,borderRadius:6,barPercentage:isMobile?0.7:0.8,categoryPercentage:isMobile?0.7:0.8},
+{label:'Perfect Opt.2',data:[2525,2701,29000,34226],backgroundColor:co.p2,borderRadius:6,barPercentage:isMobile?0.7:0.8,categoryPercentage:isMobile?0.7:0.8},
+{label:'ทองสถิตย์',data:[2200,2113,132,4445],backgroundColor:co.t,borderRadius:6,barPercentage:isMobile?0.7:0.8,categoryPercentage:isMobile?0.7:0.8}
 ]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+  layout:{padding:{right: isMobile ? 100 : 160}},
   plugins:{
-    legend:{labels:{color:'#333',font:{family:'Inter',size:14}}},
-    datalabels:{display:true,color:'#333',font:{family:'Inter',size:11,weight:'bold'},anchor:'end',align:'right',offset:4,textAlign:'left',
-      formatter:function(v,ctx){var name=ctx.dataset.label;return name+': '+(v>=1000?(v/1000).toFixed(1)+'K':v)+' ฿';}
+    legend:{labels:{color:'#333',font:{family:'Inter',size: isMobile ? 10 : 14},boxWidth: isMobile ? 12 : 40}},
+    datalabels:{display:true,color:'#333',
+      font:{family:'Inter',size: isMobile ? 9 : 11,weight:'bold'},
+      anchor:'end',align:'right',offset: isMobile ? 2 : 4,textAlign:'left',
+      clamp:true,clip:false,
+      formatter:function(v,ctx){
+        var name=ctx.dataset.label;
+        var valStr=(v>=1000?(v/1000).toFixed(1)+'K':v)+' ฿';
+        if(isMobile) return valStr;
+        return name+': '+valStr;
+      }
     }
   },
   scales:{
-    x:{ticks:{color:'#555',font:{family:'Inter',size:12},callback:v=>v>=1000?(v/1000).toFixed(1)+'K ฿':v+' ฿'},grid:{color:'rgba(0,0,0,0.06)'}},
-    y:{ticks:{color:'#333',font:{family:'Inter',size:14,weight:'bold'},padding:10},
+    x:{ticks:{color:'#555',font:{family:'Inter',size: isMobile ? 9 : 12},callback:v=>v>=1000?(v/1000).toFixed(1)+'K ฿':v+' ฿',maxTicksLimit: isMobile ? 6 : 8},grid:{color:'rgba(0,0,0,0.06)'}},
+    y:{ticks:{color:'#333',font:{family:'Inter',size: isMobile ? 11 : 14,weight:'bold'},padding: isMobile ? 4 : 10},
       grid:{display:true,color:'rgba(0,0,0,0.15)',lineWidth:2,drawOnChartArea:true}
     }
   }
 }});
 
 // ========== 3 Separate Pie Charts ==========
-const pieOpts=(title)=>({responsive:true,maintainAspectRatio:false,cutout:'40%',plugins:{legend:{display:false},datalabels:{display:true,color:'#333',font:{family:'Inter',size:11,weight:'bold'},formatter:(v,ctx)=>{let sum=ctx.dataset.data.reduce((a,b)=>a+b,0);let pct=(v/sum*100).toFixed(1);let labels=['⚡ไฟฟ้า','🧪เคมี','🗑️ตะกอน'];return labels[ctx.dataIndex]+'\n'+v+' THB/m³\n('+pct+'%)';},textAlign:'center'}}});
+const pieOpts=(title)=>({responsive:true,maintainAspectRatio:false,cutout:'40%',plugins:{legend:{display:false},datalabels:{display:true,color:'#333',font:{family:'Inter',size: isMobile ? 9 : 11,weight:'bold'},formatter:(v,ctx)=>{let sum=ctx.dataset.data.reduce((a,b)=>a+b,0);let pct=(v/sum*100).toFixed(1);let labels=['⚡ไฟฟ้า','🧪เคมี','🗑️ตะกอน'];if(isMobile) return labels[ctx.dataIndex]+'\n'+pct+'%';return labels[ctx.dataIndex]+'\n'+v+' THB/m³\n('+pct+'%)';},textAlign:'center'}}});
 const pieCols=[co.p1,co.yel,co.red];
 new C(document.getElementById('pieP1'),{type:'doughnut',plugins:[ChartDataLabels],data:{labels:['ค่าไฟฟ้า','ค่าสารเคมี','ค่ากำจัดตะกอน'],datasets:[{data:[5.76,5.36,57.54],backgroundColor:pieCols,borderWidth:2,borderColor:'#fff'}]},options:pieOpts('Perfect Opt.1')});
 new C(document.getElementById('pieP2'),{type:'doughnut',plugins:[ChartDataLabels],data:{labels:['ค่าไฟฟ้า','ค่าสารเคมี','ค่ากำจัดตะกอน'],datasets:[{data:[5.01,5.36,57.54],backgroundColor:pieCols,borderWidth:2,borderColor:'#fff'}]},options:pieOpts('Perfect Opt.2')});
@@ -571,7 +601,7 @@ new C(document.getElementById('yearlyChart'),{type:'bar',plugins:[ChartDataLabel
 {label:'ค่าไฟฟ้า',data:[1060201,922428,2200*365],backgroundColor:co.p1,borderRadius:4},
 {label:'ค่าสารเคมี',data:[5.36*pYr,5.36*pYr,2113*365],backgroundColor:co.yel,borderRadius:4},
 {label:'ค่ากำจัดตะกอน',data:[57.54*pYr,57.54*pYr,132*365],backgroundColor:co.red,borderRadius:4}
-]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#333',font:{family:'Inter'}}},tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+(ctx.raw/1e6).toFixed(2)+' M THB'}},datalabels:{display:function(ctx){return ctx.dataset.data[ctx.dataIndex]>100000;},color:'#333',font:{family:'Inter',size:9,weight:'bold'},formatter:v=>(v/1e6).toFixed(1)+'M'}},scales:{x:{stacked:true,ticks:{color:'#555',font:{family:'Inter'}},grid:{display:false}},y:{stacked:true,ticks:{color:'#555',callback:v=>(v/1e6).toFixed(0)+' M ฿'},grid:{color:'rgba(0,0,0,0.06)'}}}}});
+]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#333',font:{family:'Inter',size: isMobile ? 9 : 12},boxWidth: isMobile ? 10 : 40}},tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+(ctx.raw/1e6).toFixed(2)+' M THB'}},datalabels:{display:function(ctx){return ctx.dataset.data[ctx.dataIndex]>100000;},color:'#333',font:{family:'Inter',size: isMobile ? 7 : 9,weight:'bold'},formatter:v=>(v/1e6).toFixed(1)+'M'}},scales:{x:{stacked:true,ticks:{color:'#555',font:{family:'Inter',size: isMobile ? 9 : 12}},grid:{display:false}},y:{stacked:true,ticks:{color:'#555',font:{size: isMobile ? 9 : 12},callback:v=>(v/1e6).toFixed(0)+' M ฿'},grid:{color:'rgba(0,0,0,0.06)'}}}}});
 // ========== Custom Calculator ==========
 function calcCustom(){
   var vol=parseFloat(document.getElementById('customVolume').value)||504;
